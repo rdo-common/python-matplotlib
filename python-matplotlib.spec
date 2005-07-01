@@ -1,6 +1,8 @@
+%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
 Name:           python-matplotlib
 Version:        0.82
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -38,10 +40,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc license/LICENSE_PAINT license/LICENSE_PIL license/PYTZ_LICENSE.txt
 %doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
 %doc NUMARRAY_ISSUES PKG-INFO TODO
-%dir %{_libdir}/python2.4/site-packages/matplotlib
+%dir %{python_sitearch}/matplotlib
 %dir %{_datadir}/matplotlib
 
 %changelog
+* Fri Jul 01 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-3
+- Use %{python_sitearch}
+
 * Thu Jun 30 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-2
 - Rename to python-matplotlib
 - Remove unneeded Requires: python
