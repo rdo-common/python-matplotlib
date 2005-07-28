@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.82
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -13,6 +13,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  python-numeric, pygtk2-devel, gtk2-devel
+BuildRequires:  pytz, python-dateutil
 
 %description
 Matplotlib is a pure python plotting library with the goal of making
@@ -28,22 +29,29 @@ of output backends
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
+%{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
+chmod -x $RPM_BUILD_ROOT%{_datadir}/matplotlib/*.svg
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-
-%files -f INSTALLED_FILES
+%files
 %defattr(-,root,root,-)
 %doc README license/LICENSE license/LICENSE_enthought.txt
-%doc license/LICENSE_PAINT license/LICENSE_PIL license/PYTZ_LICENSE.txt
+%doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
 %doc NUMARRAY_ISSUES PKG-INFO TODO
-%dir %{python_sitearch}/matplotlib
-%dir %{_datadir}/matplotlib
+%{python_sitearch}/matplotlib/
+%{python_sitearch}/pylab.py*
+%{_datadir}/matplotlib/
 
 %changelog
+* Tue Jul 05 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-4
+- BuildRequires: pytz, python-dateutil - use upstream
+- Don't use INSTALLED_FILES, list dirs
+- Fix execute permissions
+
 * Fri Jul 01 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-3
 - Use %{python_sitearch}
 
