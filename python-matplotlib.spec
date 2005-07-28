@@ -59,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 - Fix execute permissions
 
 * Fri Jul 01 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-3
-- Use %{python_sitearch}
+- Use %%{python_sitearch}
 
 * Thu Jun 30 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-2
 - Rename to python-matplotlib
