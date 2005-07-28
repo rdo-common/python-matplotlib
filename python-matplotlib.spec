@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.83.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -47,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/matplotlib/
 
 %changelog
+* Thu Jul 28 2005 Orion Poplawski <orion@cora.nwra.com> 0.83.1-2
+- Bump rel to fix botched tag
+
 * Thu Jul 28 2005 Orion Poplawski <orion@cora.nwra.com> 0.83.1-1
 - New upstream version matplotlib 0.83.1
 
