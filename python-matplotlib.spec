@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.83.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -12,8 +12,9 @@ Source0:        http://dl.sf.net/matplotlib/matplotlib-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
-BuildRequires:  python-numeric, pygtk2-devel, gtk2-devel
-BuildRequires:  pytz, python-dateutil
+BuildRequires:  pygtk2-devel, gtk2-devel
+BuildRequires:  python-numeric, pytz, python-dateutil
+Requires:       python-numeric, pytz, python-dateutil
 
 %description
 Matplotlib is a pure python plotting library with the goal of making
@@ -47,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/matplotlib/
 
 %changelog
+* Tue Aug 02 2005 Orion Poplawski <orion@cora.nwra.com> 0.83.2-2
+- Add Requires: python-numeric, pytz, python-dateutil
+
 * Fri Jul 29 2005 Orion Poplawski <orion@cora.nwra.com> 0.83.2-1
 - New upstream version matplotlib 0.83.2
 
