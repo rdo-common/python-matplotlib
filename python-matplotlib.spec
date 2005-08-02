@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.83.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/matplotlib/
 
 %changelog
+* Tue Aug 02 2005 Orion Poplawski <orion@cora.nwra.com> 0.83.2-3
+- bump release 
+
 * Tue Aug 02 2005 Orion Poplawski <orion@cora.nwra.com> 0.83.2-2
 - Add Requires: python-numeric, pytz, python-dateutil
 
