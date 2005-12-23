@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.85
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/matplotlib/
 
 %changelog
+* Thu Dec 22 2005 Orion Poplawski <orion@cora.nwra.com> 0.85-2
+- Rebuild
+
 * Sun Nov 20 2005 Orion Poplawski <orion@cora.nwra.com> 0.85-1
 - New upstream version 0.85
 
