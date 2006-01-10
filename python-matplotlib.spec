@@ -1,8 +1,8 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.85
-Release:        2%{?dist}
+Version:        0.86
+Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -24,6 +24,7 @@ of output backends
 
 %prep
 %setup -q -n matplotlib-%{version}
+chmod -x images/*.svg
 
 %build
 %{__python} setup.py build
@@ -32,7 +33,6 @@ of output backends
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
 chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
-chmod -x $RPM_BUILD_ROOT%{_datadir}/matplotlib/*.svg
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -45,9 +45,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc NUMARRAY_ISSUES PKG-INFO TODO
 %{python_sitearch}/matplotlib/
 %{python_sitearch}/pylab.py*
-%{_datadir}/matplotlib/
 
 %changelog
+* Tue Jan 10 2006 Orion Poplawski <orion@cora.nwra.com> 0.86-1
+- Update to 0.86
+
 * Thu Dec 22 2005 Orion Poplawski <orion@cora.nwra.com> 0.85-2
 - Rebuild
 
