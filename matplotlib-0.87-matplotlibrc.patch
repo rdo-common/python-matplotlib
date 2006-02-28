@@ -1,0 +1,13 @@
+--- matplotlib-0.87/setup.py.orig	2006-02-14 11:11:32.000000000 -0700
++++ matplotlib-0.87/setup.py	2006-02-27 15:19:28.000000000 -0700
+@@ -258,8 +258,8 @@
+ 
+ # packagers: set rc['numerix'] and rc['backend'] here to override the auto
+ # defaults, eg
+-#rc['numerix'] = numpy
+-#rc['backend'] = GTKAgg
++rc['numerix'] = 'Numeric'
++rc['backend'] = 'GTKAgg'
+ if sys.platform=='win32':
+     rc = dict(backend='TkAgg', numerix='Numeric')
+ template = file('matplotlibrc.template').read()
