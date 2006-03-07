@@ -1,7 +1,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.87
+Version:        0.87.1
 Release:        1%{?dist}
 Summary:        Python plotting library
 
@@ -16,6 +16,7 @@ BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  pygtk2-devel, gtk2-devel, tkinter, tk-devel
 BuildRequires:  python-numeric, pytz, python-dateutil, numpy, python-numarray
 Requires:       python-numeric, pytz, python-dateutil
+Requires:       pycairo >= 1.0.2
 
 
 %description
@@ -89,6 +90,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
 %changelog
+* Tue Mar  7 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.1-1
+- Update to 0.87.1
+- Add pycairo >= 1.0.2 requires (FC5+ only)
+
 * Fri Feb 24 2006 Orion Poplawski <orion@cora.nwra.com> 0.87-1
 - Update to 0.87
 - Add BR numpy and python-numarray
