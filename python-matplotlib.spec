@@ -1,7 +1,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.87.1
+Version:        0.87.2
 Release:        1%{?dist}
 Summary:        Python plotting library
 
@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
 %changelog
+* Tue Mar  7 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.2-1
+- Update to 0.87.2
+
 * Tue Mar  7 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.1-1
 - Update to 0.87.1
 - Add pycairo >= 1.0.2 requires (FC5+ only)
