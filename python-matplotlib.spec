@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.87.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
 %changelog
+* Mon May 15 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.2-2
+- Rebuild for new numpy
+
 * Tue Mar  7 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.2-1
 - Update to 0.87.2
 
