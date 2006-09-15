@@ -1,7 +1,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.87.3
+Version:        0.87.5
 Release:        1%{?dist}
 Summary:        Python plotting library
 
@@ -58,39 +58,25 @@ rm -rf $RPM_BUILD_ROOT
 %doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
 %doc NUMARRAY_ISSUES PKG-INFO TODO
-%dir %{python_sitearch}/matplotlib
-%{python_sitearch}/matplotlib/*.py
-%{python_sitearch}/matplotlib/*.pyc
-%ghost %{python_sitearch}/matplotlib/*.pyo
-%{python_sitearch}/matplotlib/*.so
-%dir %{python_sitearch}/matplotlib/backends
-%{python_sitearch}/matplotlib/backends/*.py
-%{python_sitearch}/matplotlib/backends/*.pyc
-%ghost %{python_sitearch}/matplotlib/backends/*.pyo
-%{python_sitearch}/matplotlib/backends/*.so
-%{python_sitearch}/matplotlib/enthought/
-%{python_sitearch}/matplotlib/ft2font.so
-%{python_sitearch}/matplotlib/mpl-data/
-%{python_sitearch}/matplotlib/numerix/
-%{python_sitearch}/matplotlib/toolkits/
-%{python_sitearch}/pylab.py
-%{python_sitearch}/pylab.pyc
-%ghost %{python_sitearch}/pylab.pyo
+%{python_sitearch}/matplotlib/
+%{python_sitearch}/pylab.py*
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
 
 %files tk
-%{python_sitearch}/matplotlib/backends/backend_tkagg.py
-%{python_sitearch}/matplotlib/backends/backend_tkagg.pyc
-%{python_sitearch}/matplotlib/backends/tkagg.py
-%{python_sitearch}/matplotlib/backends/tkagg.pyc
-%ghost %{python_sitearch}/matplotlib/backends/backend_tkagg.pyo
-%ghost %{python_sitearch}/matplotlib/backends/tkagg.pyo
+%{python_sitearch}/matplotlib/backends/backend_tkagg.py*
+%{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
 
 %changelog
+* Thu Sep  7 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.5-1
+- Update to 0.87.5
+
+* Thu Jul 27 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.4-1
+- Update to 0.87.4
+
 * Wed Jun  7 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.3-1
 - Update to 0.87.3
 
