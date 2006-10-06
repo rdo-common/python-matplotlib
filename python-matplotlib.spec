@@ -1,7 +1,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.87.5
+Version:        0.87.6
 Release:        1%{?dist}
 Summary:        Python plotting library
 
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct  6 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.6-1
+- Update to 0.87.6
+
 * Thu Sep  7 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.5-1
 - Update to 0.87.5
 
