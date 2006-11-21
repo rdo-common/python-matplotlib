@@ -1,7 +1,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.87.6
+Version:        0.87.7
 Release:        1%{?dist}
 Summary:        Python plotting library
 
@@ -9,7 +9,8 @@ Group:          Development/Libraries
 License:        Python Software Foundation License 
 URL:            http://sourceforge.net/projects/matplotlib
 Source0:        http://dl.sf.net/matplotlib/matplotlib-%{version}.tar.gz
-Patch0:         matplotlib-0.87-matplotlibrc.patch
+Patch0:         matplotlib-0.87.7-matplotlibrc.patch
+Patch1:         matplotlib-0.87.7-tkagg-check.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -38,7 +39,8 @@ Requires:       tkinter
 
 %prep
 %setup -q -n matplotlib-%{version}
-%patch -p1 -b .matplotlibrc
+%patch0 -p1 -b .matplotlibrc
+%patch1 -p1 -b setup.py 
 chmod -x images/*.svg
 
 %build
@@ -71,6 +73,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov  21 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-1
+- Update to 0.87.7 and fix up the defaults to use numpy
+- Force build of tkagg backend without X server
+- Use src.rpm from Jef Spaleta, closes bug 216578
+
 * Fri Oct  6 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.6-1
 - Update to 0.87.6
 
