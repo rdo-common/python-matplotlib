@@ -17,7 +17,7 @@ BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  pygtk2-devel, gtk2-devel, tkinter, tk-devel
 BuildRequires:  python-numeric, pytz, python-dateutil, numpy, python-numarray
 Requires:       python-numeric, pytz, python-dateutil
-Requires:       pycairo >= 1.0.2
+Requires:       pycairo >= 1.2.0
 
 
 %description
