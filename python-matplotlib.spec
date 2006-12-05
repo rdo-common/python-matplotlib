@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.87.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -11,12 +11,13 @@ URL:            http://sourceforge.net/projects/matplotlib
 Source0:        http://dl.sf.net/matplotlib/matplotlib-%{version}.tar.gz
 Patch0:         matplotlib-0.87.7-matplotlibrc.patch
 Patch1:         matplotlib-0.87.7-tkagg-check.patch
+Patch2:         matplotlib-0.87.7-pygtk-check.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  pygtk2-devel, gtk2-devel, tkinter, tk-devel
 BuildRequires:  python-numeric, pytz, python-dateutil, numpy, python-numarray
-Requires:       python-numeric, pytz, python-dateutil
+Requires:       numpy, pytz, python-dateutil
 Requires:       pycairo >= 1.2.0
 
 
@@ -40,7 +41,8 @@ Requires:       tkinter
 %prep
 %setup -q -n matplotlib-%{version}
 %patch0 -p1 -b .matplotlibrc
-%patch1 -p1 -b setup.py 
+%patch1 -p1 -b .tkagg
+%patch2 -p1 -b .pygtk
 chmod -x images/*.svg
 
 %build
@@ -73,6 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec   5 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-2
+- Force build of gtk/gtkagg backends in mock (bug #218153)
+- Change Requires from python-numeric to numpy (bug #218154)
+
 * Tue Nov  21 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-1
 - Update to 0.87.7 and fix up the defaults to use numpy
 - Force build of tkagg backend without X server
