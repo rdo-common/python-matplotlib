@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.87.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec   11 2006 Jef Spaleta <jspaleta@gmail.com> 0.87.7-3
+- Release bump for rebuild against python 2.5 in devel tree
+
 * Tue Dec   5 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-2
 - Force build of gtk/gtkagg backends in mock (bug #218153)
 - Change Requires from python-numeric to numpy (bug #218154)
