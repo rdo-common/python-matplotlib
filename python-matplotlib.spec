@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.87.7
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -61,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README license/LICENSE license/LICENSE_enthought.txt
 %doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
-%doc NUMARRAY_ISSUES PKG-INFO TODO
+%doc NUMARRAY_ISSUES PKG-INFO TODO examples
 %{python_sitearch}/matplotlib/
 %{python_sitearch}/pylab.py*
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
@@ -75,14 +75,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Dec   11 2006 Jef Spaleta <jspaleta@gmail.com> 0.87.7-3
+* Tue Jan  5 2007 Orion Poplawski <orion@cora.nwra.com> 0.87.7-4
+- Add examples to %docs
+
+* Mon Dec 11 2006 Jef Spaleta <jspaleta@gmail.com> 0.87.7-3
 - Release bump for rebuild against python 2.5 in devel tree
 
-* Tue Dec   5 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-2
+* Tue Dec  5 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-2
 - Force build of gtk/gtkagg backends in mock (bug #218153)
 - Change Requires from python-numeric to numpy (bug #218154)
 
-* Tue Nov  21 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-1
+* Tue Nov 21 2006 Orion Poplawski <orion@cora.nwra.com> 0.87.7-1
 - Update to 0.87.7 and fix up the defaults to use numpy
 - Force build of tkagg backend without X server
 - Use src.rpm from Jef Spaleta, closes bug 216578
