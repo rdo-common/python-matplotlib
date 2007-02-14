@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.90.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 14 2007 Orion Poplawski <orion@cora.nwra.com> 0.90.0-2
+- Rebuild for Tcl/Tk downgrade
+
 * Sat Feb 10 2007 Jef Spaleta <jspaleta@gmail.com> 0.90.0-2
 - Release bump for rebuild against new tk 
 
