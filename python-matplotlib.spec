@@ -1,17 +1,16 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.90.0
-Release:        3%{?dist}
+Version:        0.90.1
+Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
 License:        Python Software Foundation License 
 URL:            http://sourceforge.net/projects/matplotlib
-Source0:        http://dl.sf.net/matplotlib/matplotlib-%{version}.tar.gz
+Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}.tar.gz
 Patch0:         matplotlib-0.87.7-matplotlibrc.patch
-Patch1:         matplotlib-0.87.7-tkagg-check.patch
-Patch2:         matplotlib-0.87.7-pygtk-check.patch
+Patch1:         matplotlib-0.90.1-setup.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -41,9 +40,8 @@ Requires:       tkinter
 %prep
 %setup -q -n matplotlib-%{version}
 %patch0 -p1 -b .matplotlibrc
-%patch1 -p1 -b .tkagg
-%patch2 -p1 -b .pygtk
-chmod -x images/*.svg
+%patch1 -p1 -b .setup
+chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %build
 %{__python} setup.py build
@@ -75,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 04 2007 Orion Poplawski <orion@cora.nwra.com> 0.90.1-1
+- Update to 0.90.1
+
 * Wed Feb 14 2007 Orion Poplawski <orion@cora.nwra.com> 0.90.0-2
 - Rebuild for Tcl/Tk downgrade
 
