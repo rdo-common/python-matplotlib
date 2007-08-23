@@ -2,11 +2,11 @@
 
 Name:           python-matplotlib
 Version:        0.90.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
-License:        Python Software Foundation License 
+License:        Python
 URL:            http://sourceforge.net/projects/matplotlib
 Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}.tar.gz
 Patch0:         matplotlib-0.87.7-matplotlibrc.patch
@@ -73,6 +73,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 23 2007 Orion Poplawski <orion@cora.nwra.com> 0.90.1-2
+- Update license tag to Python
+- Rebuild for BuildID
+
 * Mon Jun 04 2007 Orion Poplawski <orion@cora.nwra.com> 0.90.1-1
 - Update to 0.90.1
 
