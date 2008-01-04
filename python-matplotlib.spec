@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.90.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan  3 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.90.1-3
+- Rebuild for new Tcl 8.5
+
 * Thu Aug 23 2007 Orion Poplawski <orion@cora.nwra.com> 0.90.1-2
 - Update license tag to Python
 - Rebuild for BuildID
