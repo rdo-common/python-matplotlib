@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.90.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -60,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
 %doc NUMARRAY_ISSUES PKG-INFO TODO examples
+%doc Sane/CHANGES Sane/demo*.py Sane/sanedoc.txt
+%if 0%{?fedora} >= 9
+%{python_sitearch}/*egg-info
+%endif
 %{python_sitearch}/matplotlib/
 %{python_sitearch}/pylab.py*
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
@@ -73,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  4 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.90.1-4
+- Support for Python Eggs for F9+
+
 * Thu Jan  3 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.90.1-3
 - Rebuild for new Tcl 8.5
 
