@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.90.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -76,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 19 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0.90.1-6
+- Autorebuild for GCC 4.3
+
 * Fri Jan  4 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.90.1-5
 - Fixed typo in spec.
 
