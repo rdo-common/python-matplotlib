@@ -1,21 +1,20 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.90.1
-Release:        6%{?dist}
+Version:        0.91.2
+Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
 License:        Python
 URL:            http://sourceforge.net/projects/matplotlib
 Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}.tar.gz
-Patch0:         matplotlib-0.87.7-matplotlibrc.patch
-Patch1:         matplotlib-0.90.1-setup.patch
+Source1:        setup.cfg
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  pygtk2-devel, gtk2-devel, tkinter, tk-devel
-BuildRequires:  python-numeric, pytz, python-dateutil, numpy, python-numarray
+BuildRequires:  pytz, python-dateutil, numpy
 Requires:       numpy, pytz, python-dateutil
 Requires:       pycairo >= 1.2.0
 
@@ -39,11 +38,10 @@ Requires:       tkinter
 
 %prep
 %setup -q -n matplotlib-%{version}
-%patch0 -p1 -b .matplotlibrc
-%patch1 -p1 -b .setup
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %build
+cp %{SOURCE1} ./setup.cfg
 %{__python} setup.py build
 
 %install
@@ -59,7 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README license/LICENSE license/LICENSE_enthought.txt
 %doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
-%doc NUMARRAY_ISSUES PKG-INFO TODO examples
+%doc PKG-INFO TODO examples
 %if 0%{?fedora} >= 9
 %{python_sitearch}/*egg-info
 %endif
@@ -76,6 +74,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar  21 2008 Jef Spaleta <jspaleta[AT]fedoraproject org> - 0.91.2-1
+- New upstream version
+- Adding Fedora specific setup.cfg from included template
+- removed numarry and numerics build requirements
+
 * Tue Feb 19 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0.90.1-6
 - Autorebuild for GCC 4.3
 
