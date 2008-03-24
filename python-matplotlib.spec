@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.91.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -10,6 +10,7 @@ License:        Python
 URL:            http://sourceforge.net/projects/matplotlib
 Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}.tar.gz
 Source1:        setup.cfg
+Patch0:         matplotlib-gcc43.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -38,6 +39,7 @@ Requires:       tkinter
 
 %prep
 %setup -q -n matplotlib-%{version}
+%patch0 -p1
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %build
@@ -74,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar  21 2008 Jef Spaleta <jspaleta[AT]fedoraproject org> - 0.91.2-2
+- gcc43 cleanups
+
 * Fri Mar  21 2008 Jef Spaleta <jspaleta[AT]fedoraproject org> - 0.91.2-1
 - New upstream version
 - Adding Fedora specific setup.cfg from included template
