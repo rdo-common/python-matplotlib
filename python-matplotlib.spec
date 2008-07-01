@@ -1,8 +1,8 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.91.2
-Release:        2%{?dist}
+Version:        0.98.1
+Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -39,7 +39,7 @@ Requires:       tkinter
 
 %prep
 %setup -q -n matplotlib-%{version}
-%patch0 -p1
+#%patch0 -p1
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %build
@@ -56,7 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc README license/LICENSE license/LICENSE_enthought.txt
+%doc README.txt license/LICENSE license/LICENSE_enthought.txt
 %doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
 %doc PKG-INFO TODO examples
@@ -64,6 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/*egg-info
 %endif
 %{python_sitearch}/matplotlib/
+%{python_sitearch}/mpl_toolkits/
 %{python_sitearch}/pylab.py*
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/tkagg.*
@@ -76,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul  1 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.1-1
+- Latest upstream release
+
 * Fri Mar  21 2008 Jef Spaleta <jspaleta[AT]fedoraproject org> - 0.91.2-2
 - gcc43 cleanups
 
