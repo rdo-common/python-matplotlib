@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.98.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 29 2008 Ignacio Vazquez-Abrams <ivazqueznet+rpm@gmail.com> - 0.98.3-2
+- Rebuild for Python 2.6
+
 * Wed Aug  6 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.3-1
 - Latest upstream release
 
