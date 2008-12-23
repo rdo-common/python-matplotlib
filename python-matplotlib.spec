@@ -1,8 +1,8 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.98.3
-Release:        2%{?dist}
+Version:        0.98.5.2
+Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -50,6 +50,7 @@ cp %{SOURCE1} ./setup.cfg
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
 chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
+rm -rf $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data/fonts
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -58,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.txt license/LICENSE license/LICENSE_enthought.txt
 %doc license/LICENSE_PAINT license/LICENSE_PIL
-%doc API_CHANGES CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
+%doc CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
 %doc PKG-INFO TODO examples
 %if 0%{?fedora} >= 9
 %{python_sitearch}/*egg-info
@@ -77,6 +78,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 22 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.5-1
+- Latest upstream release
+- Strip out included fonts
+
 * Sat Nov 29 2008 Ignacio Vazquez-Abrams <ivazqueznet+rpm@gmail.com> - 0.98.3-2
 - Rebuild for Python 2.6
 
