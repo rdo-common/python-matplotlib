@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.98.5.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -18,7 +18,7 @@ BuildRequires:  pygtk2-devel, gtk2-devel, tkinter, tk-devel
 BuildRequires:  pytz, python-dateutil, numpy
 Requires:       numpy, pytz, python-dateutil
 Requires:       pycairo >= 1.2.0
-
+Requires:       dejavu-fonts-sans
 
 %description
 Matplotlib is a pure python plotting library with the goal of making
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 23 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.5-2
+- Add dep on DejaVu Sans font for default font support
+
 * Mon Dec 22 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.5-1
 - Latest upstream release
 - Strip out included fonts
