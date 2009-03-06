@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.98.5.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -18,7 +18,7 @@ BuildRequires:  pygtk2-devel, gtk2-devel, tkinter, tk-devel
 BuildRequires:  pytz, python-dateutil, numpy
 Requires:       numpy, pytz, python-dateutil
 Requires:       pycairo >= 1.2.0
-Requires:       dejavu-fonts-sans
+Requires:       dejavu-sans-fonts
 
 %description
 Matplotlib is a pure python plotting library with the goal of making
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 06 2009 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.5-4
+- Fixed font dep after font guideline change
+
 * Thu Feb 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.98.5.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
