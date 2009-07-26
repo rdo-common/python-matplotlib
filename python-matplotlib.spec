@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.98.5.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.98.5.2-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Fri Mar 06 2009 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.5-4
 - Fixed font dep after font guideline change
 
