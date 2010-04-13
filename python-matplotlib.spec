@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.99.1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -79,6 +79,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 12 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.99.1.2-2
+- Bump to rebuild against numpy 1.3  
+
 * Thu Apr 1 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.99.1.2-1
 - Bump to rebuild against numpy 1.4.0  
 
