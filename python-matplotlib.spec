@@ -2,7 +2,7 @@
 
 Name:           python-matplotlib
 Version:        0.99.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -11,6 +11,7 @@ URL:            http://sourceforge.net/projects/matplotlib
 Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}.tar.gz
 Source1:        setup.cfg
 Patch0:         matplotlib-gcc43.patch
+Patch1:         matplotlib_gtk_tooltip.patch 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -41,6 +42,7 @@ Requires:       tkinter
 #%setup -q -n matplotlib-%{version}
 %setup -q -n matplotlib-0.99.1.1
 #%patch0 -p1
+%patch1 -p0
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %build
@@ -79,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 27 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.99.1.2-4
+- Upstream patch to fix deprecated gtk tooltip warning.  
+
 * Mon Apr 12 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.99.1.2-2
 - Bump to rebuild against numpy 1.3  
 
