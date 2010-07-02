@@ -1,8 +1,8 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.99.1.2
-Release:        4%{?dist}
+Version:        0.99.3
+Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -39,8 +39,8 @@ Requires:       tkinter
 
 
 %prep
-#%setup -q -n matplotlib-%{version}
-%setup -q -n matplotlib-0.99.1.1
+%setup -q -n matplotlib-%{version}
+#%setup -q -n matplotlib-0.99.3
 #%patch0 -p1
 %patch1 -p0
 chmod -x lib/matplotlib/mpl-data/images/*.svg
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 1 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.99.3-1
+- New upstream release  
+
 * Thu May 27 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.99.1.2-4
 - Upstream patch to fix deprecated gtk tooltip warning.  
 
