@@ -1,14 +1,18 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-matplotlib
-Version:        0.99.3
+Version:        1.0.0
 Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
 License:        Python
 URL:            http://sourceforge.net/projects/matplotlib
-Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}.tar.gz
+#Modified Sources to remove the one undistributable file
+#See generate-tarball.sh in fedora cvs repository for logic
+#sha1sum matplotlib-1.0.0-without-gpc.tar.gz 
+#c3c2cb82ee122b36977f636948bb4a79b15c03ba  matplotlib-1.0.0-without-gpc.tar.gz
+Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}-without-gpc.tar.gz
 Source1:        setup.cfg
 Patch0:         matplotlib-gcc43.patch
 Patch1:         matplotlib_gtk_tooltip.patch 
@@ -42,7 +46,7 @@ Requires:       tkinter
 %setup -q -n matplotlib-%{version}
 #%setup -q -n matplotlib-0.99.3
 #%patch0 -p1
-%patch1 -p0
+#%patch1 -p0
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %build
@@ -81,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 8 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 1.0.0-1
+- New upstream release  
+- Remove undistributable file from bundled agg library 
+
 * Thu Jul 1 2010 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.99.3-1
 - New upstream release  
 
