@@ -8,6 +8,8 @@ dir=matplotlib-${version}
 file=matplotlib-${version}.tar.gz
 result=matplotlib-${version}-without-gpc.tar.gz
 
+wget -vc http://downloads.sourceforge.net/matplotlib/$file
+
 rm -rf matplotlib-${version}
 tar xzf $file
 

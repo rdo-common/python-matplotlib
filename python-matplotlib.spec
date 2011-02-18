@@ -1,8 +1,15 @@
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%if ! (0%{?rhel} > 5)
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%endif
+
+%{?filter_setup:
+%filter_provides_in %{python_sitearch}/.*\.so$
+%filter_setup
+}
 
 Name:           python-matplotlib
-Version:        1.0.0
-Release:        3%{?dist}
+Version:        1.0.1
+Release:        1%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -10,9 +17,9 @@ License:        Python
 URL:            http://sourceforge.net/projects/matplotlib
 #Modified Sources to remove the one undistributable file
 #See generate-tarball.sh in fedora cvs repository for logic
-#sha1sum matplotlib-1.0.0-without-gpc.tar.gz 
-#c3c2cb82ee122b36977f636948bb4a79b15c03ba  matplotlib-1.0.0-without-gpc.tar.gz
-Source0:        http://downloads.sourceforge.net/matplotlib/matplotlib-%{version}-without-gpc.tar.gz
+#sha1sum matplotlib-1.0.1-without-gpc.tar.gz
+#a8ccbf4c4b9b90c773380cac83e792673837d3de  matplotlib-1.0.1-without-gpc.tar.gz
+Source0:        matplotlib-%{version}-without-gpc.tar.gz
 Source1:        setup.cfg
 Patch0:         matplotlib-gcc43.patch
 Patch1:         matplotlib_gtk_tooltip.patch 
@@ -79,12 +86,18 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
 
 %files tk
+%defattr(-,root,root,-)
 %{python_sitearch}/matplotlib/backends/backend_tkagg.py*
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
 
 %changelog
+* Fri Feb 18 2011 Thomas Spura <tomspur@fedoraproject.org> - 1.0.1-1
+- update to new bugfix version (#678489)
+- set file attributes in tk subpackage
+- filter private *.so
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
