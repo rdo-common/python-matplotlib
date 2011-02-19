@@ -9,7 +9,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -20,7 +20,8 @@ URL:            http://sourceforge.net/projects/matplotlib
 #sha1sum matplotlib-1.0.1-without-gpc.tar.gz
 #a8ccbf4c4b9b90c773380cac83e792673837d3de  matplotlib-1.0.1-without-gpc.tar.gz
 Source0:        matplotlib-%{version}-without-gpc.tar.gz
-Source1:        setup.cfg
+Source1:	http://downloads.sourceforge.net/mpl_sampledata-%{version}.tar.gz
+Source2:        setup.cfg
 Patch0:         matplotlib-gcc43.patch
 Patch1:         matplotlib_gtk_tooltip.patch 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -48,17 +49,51 @@ Requires:       tkinter
 %description    tk
 %{summary}
 
+%package        doc
+Summary:        Documentation files for python-matplotlib
+Group:          Documentation
+Requires:       %{name} = %{version}-%{release}
+BuildRequires:	python-sphinx
+BuildRequires:	tex(latex)
+BuildRequires:	dvipng
+BuildRequires:  PyQt4
+BuildRequires:	python-basemap
+# Some of the docs don't build as python-xlwt is needed. However the review
+# request isn't yet complete for this package. See:
+# https://bugzilla.redhat.com/show_bug.cgi?id=613766 
+# BuildRequires: python-xlwt
+
+%description    doc
+%{summary}
+
 
 %prep
-%setup -q -n matplotlib-%{version}
+%setup -q -n matplotlib-%{version} -b1
 #%setup -q -n matplotlib-0.99.3
 #%patch0 -p1
 #%patch1 -p0
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
+# Ensure all example files are non-executable so that the -doc package doesn't
+# drag in dependencies
+find examples -name '*.py' -exec chmod a-x '{}' \;
+
 %build
-cp %{SOURCE1} ./setup.cfg
+cp %{SOURCE2} ./setup.cfg
 %{__python} setup.py build
+
+# Build html documentation
+%global py_ver %(echo `python -c "import sys; sys.stdout.write(sys.version[:3])"`)
+%global sampledatadir %{_builddir}/mpl_sampledata-%{version}
+%global libpath %{_builddir}/matplotlib-%{version}/build/lib.linux-%{_arch}-%{py_ver}
+pushd doc
+echo "examples.download : False" >> matplotlibrc
+echo "examples.directory : %{sampledatadir}" >> matplotlibrc
+# This really does need to be ran twice
+echo $PYTHONPATH
+export PYTHONPATH=%{libpath}
+%{__python} make.py html && %{__python} make.py html
+popd
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -74,7 +109,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.txt license/LICENSE license/LICENSE_enthought.txt
 %doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
-%doc PKG-INFO TODO examples
+%doc PKG-INFO TODO
 %if 0%{?fedora} >= 9
 %{python_sitearch}/*egg-info
 %endif
@@ -91,8 +126,16 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
+%files doc
+%doc doc/build/html
+%doc examples
 
 %changelog
+* Sat Feb 19 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-2
+- Build and package HTML documentation in -doc sub-package
+- Move examples to -doc sub-package
+- Make examples non-executable
+
 * Fri Feb 18 2011 Thomas Spura <tomspur@fedoraproject.org> - 1.0.1-1
 - update to new bugfix version (#678489)
 - set file attributes in tk subpackage
