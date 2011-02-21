@@ -31,6 +31,7 @@ Source1:	http://downloads.sourceforge.net/mpl_sampledata-%{version}.tar.gz
 Source2:        setup.cfg
 Patch0:         matplotlib-gcc43.patch
 Patch1:         matplotlib_gtk_tooltip.patch 
+Patch2:		matplotlib-1.0.1-plot_directive.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -80,6 +81,7 @@ BuildRequires:	python-basemap
 #%setup -q -n matplotlib-0.99.3
 #%patch0 -p1
 #%patch1 -p0
+%patch2 -p1
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 # Ensure all example files are non-executable so that the -doc package doesn't
@@ -101,7 +103,7 @@ echo "examples.directory : %{sampledatadir}" >> matplotlibrc
 # This really does need to be ran twice
 echo $PYTHONPATH
 export PYTHONPATH=%{libpath}
-%{__python} make.py html && %{__python} make.py html
+%{__python} make.py --small html && %{__python} make.py --small html
 popd
 %endif
 
@@ -145,6 +147,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-3
 - Add conditional for optionally building doc sub-package
+- Add flag to build low res images for documentation
+- Add matplotlib-1.0.1-plot_directive.patch to fix build of low res images
 
 * Sat Feb 19 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-2
 - Build and package HTML documentation in -doc sub-package
