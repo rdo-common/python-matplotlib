@@ -29,9 +29,7 @@ URL:            http://sourceforge.net/projects/matplotlib
 Source0:        matplotlib-%{version}-without-gpc.tar.gz
 Source1:	http://downloads.sourceforge.net/mpl_sampledata-%{version}.tar.gz
 Source2:        setup.cfg
-Patch0:         matplotlib-gcc43.patch
-Patch1:         matplotlib_gtk_tooltip.patch 
-Patch2:		matplotlib-1.0.1-plot_directive.patch
+Patch0:		matplotlib-1.0.1-plot_directive.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -78,10 +76,7 @@ BuildRequires:	python-basemap
 
 %prep
 %setup -q -n matplotlib-%{version} -b1
-#%setup -q -n matplotlib-0.99.3
-#%patch0 -p1
-#%patch1 -p0
-%patch2 -p1
+%patch0 -p1
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 # Ensure all example files are non-executable so that the -doc package doesn't
@@ -149,6 +144,7 @@ rm -rf $RPM_BUILD_ROOT
 - Add conditional for optionally building doc sub-package
 - Add flag to build low res images for documentation
 - Add matplotlib-1.0.1-plot_directive.patch to fix build of low res images
+- Remove unused patches
 
 * Sat Feb 19 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-2
 - Build and package HTML documentation in -doc sub-package
