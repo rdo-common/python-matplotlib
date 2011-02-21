@@ -16,7 +16,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -53,6 +53,16 @@ Requires:       %{name} = %{version}-%{release}
 Requires:       tkinter
 
 %description    tk
+%{summary}
+
+%package        wx
+Summary:        wxPython backend for python-matplotlib
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+Requires:       wxPython
+BuildRequires:  wxPython-devel
+
+%description    wx
 %{summary}
 
 %if %{withdocs}
@@ -126,12 +136,19 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
+%exclude %{python_sitearch}/matplotlib/backends/backend_wx.*
+%exclude %{python_sitearch}/matplotlib/backends/backend_wxagg.*
 
 %files tk
 %defattr(-,root,root,-)
 %{python_sitearch}/matplotlib/backends/backend_tkagg.py*
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
+
+%files wx
+%defattr(-,root,root,-)
+%{python_sitearch}/matplotlib/backends/backend_wx.py*
+%{python_sitearch}/matplotlib/backends/backend_wxagg.py*
 
 %if %{withdocs}
 %files doc
@@ -140,6 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-4
+- Enable wxPython backend
+
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-3
 - Add conditional for optionally building doc sub-package
 - Add flag to build low res images for documentation
