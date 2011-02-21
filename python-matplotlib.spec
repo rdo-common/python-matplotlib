@@ -7,9 +7,16 @@
 %filter_setup
 }
 
+# We include capability for building a doc subpackage for
+# documentation. However, building the documentation requires python-basemap,
+# and python-basemap requires python-matplotlib to build, so we have a
+# circular dependence, and so we need to be able to turn off building of the
+# documents
+%global withdocs 1
+
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -49,6 +56,7 @@ Requires:       tkinter
 %description    tk
 %{summary}
 
+%if %{withdocs}
 %package        doc
 Summary:        Documentation files for python-matplotlib
 Group:          Documentation
@@ -65,7 +73,7 @@ BuildRequires:	python-basemap
 
 %description    doc
 %{summary}
-
+%endif
 
 %prep
 %setup -q -n matplotlib-%{version} -b1
@@ -83,6 +91,7 @@ cp %{SOURCE2} ./setup.cfg
 %{__python} setup.py build
 
 # Build html documentation
+%if %{withdocs}
 %global py_ver %(echo `python -c "import sys; sys.stdout.write(sys.version[:3])"`)
 %global sampledatadir %{_builddir}/mpl_sampledata-%{version}
 %global libpath %{_builddir}/matplotlib-%{version}/build/lib.linux-%{_arch}-%{py_ver}
@@ -94,6 +103,7 @@ echo $PYTHONPATH
 export PYTHONPATH=%{libpath}
 %{__python} make.py html && %{__python} make.py html
 popd
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -126,11 +136,16 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
+%if %{withdocs}
 %files doc
 %doc doc/build/html
 %doc examples
+%endif
 
 %changelog
+* Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-3
+- Add conditional for optionally building doc sub-package
+
 * Sat Feb 19 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-2
 - Build and package HTML documentation in -doc sub-package
 - Move examples to -doc sub-package
