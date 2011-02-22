@@ -16,7 +16,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -153,11 +153,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{withdocs}
 %files doc
+%defattr(-,root,root,-)
 %doc doc/build/html
 %doc examples
 %endif
 
 %changelog
+* Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-5
+- Add default attr to doc sub-package file list
+
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-4
 - Enable wxPython backend
 - Make -doc sub-package noarch
