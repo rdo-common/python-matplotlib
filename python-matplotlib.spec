@@ -49,7 +49,7 @@ of output backends
 %package        tk
 Summary:        Tk backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       tkinter
 
 %description    tk
@@ -58,7 +58,7 @@ Requires:       tkinter
 %package        wx
 Summary:        wxPython backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       wxPython
 BuildRequires:  wxPython-devel
 
@@ -69,7 +69,7 @@ BuildRequires:  wxPython-devel
 %package        doc
 Summary:        Documentation files for python-matplotlib
 Group:          Documentation
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	python-sphinx
 BuildRequires:	tex(latex)
 BuildRequires:	dvipng
@@ -161,6 +161,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-5
 - Add default attr to doc sub-package file list
 - No longer designate -doc subpackage as noarch
+- Add arch specific Requires for tk, wx and doc sub-packages
 
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-4
 - Enable wxPython backend
