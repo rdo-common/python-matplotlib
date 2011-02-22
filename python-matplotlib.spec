@@ -69,6 +69,7 @@ BuildRequires:  wxPython-devel
 %package        doc
 Summary:        Documentation files for python-matplotlib
 Group:          Documentation
+BuildArch:	noarch
 Requires:       %{name} = %{version}-%{release}
 BuildRequires:	python-sphinx
 BuildRequires:	tex(latex)
@@ -159,6 +160,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-4
 - Enable wxPython backend
+- Make -doc sub-package noarch
 
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-3
 - Add conditional for optionally building doc sub-package
