@@ -16,7 +16,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -93,6 +93,9 @@ chmod -x lib/matplotlib/mpl-data/images/*.svg
 # drag in dependencies
 find examples -name '*.py' -exec chmod a-x '{}' \;
 
+# Fix line ending in this example file
+sed -i 's/\r//' examples/api/font_family_rc.py
+
 %build
 cp %{SOURCE2} ./setup.cfg
 %{__python} setup.py build
@@ -106,9 +109,11 @@ pushd doc
 echo "examples.download : False" >> matplotlibrc
 echo "examples.directory : %{sampledatadir}" >> matplotlibrc
 # This really does need to be ran twice
-echo $PYTHONPATH
 export PYTHONPATH=%{libpath}
 %{__python} make.py --small html && %{__python} make.py --small html
+rm -f html/.buildinfo
+chmod -x html/pyplots/make.py
+sed -i 's/\r//' html/_sources/devel/add_new_projection.txt
 popd
 %endif
 
@@ -158,6 +163,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Feb 25 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-7
+- Remove a debugging echo statement from the spec file
+- Fix some line endings and permissions in -doc sub-package
+
 * Fri Feb 25 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-6
 - Spec file cleanups to silence some rpmlint warnings
 
