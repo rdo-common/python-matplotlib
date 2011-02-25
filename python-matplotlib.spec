@@ -16,7 +16,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -27,9 +27,9 @@ URL:            http://sourceforge.net/projects/matplotlib
 #sha1sum matplotlib-1.0.1-without-gpc.tar.gz
 #a8ccbf4c4b9b90c773380cac83e792673837d3de  matplotlib-1.0.1-without-gpc.tar.gz
 Source0:        matplotlib-%{version}-without-gpc.tar.gz
-Source1:	http://downloads.sourceforge.net/mpl_sampledata-%{version}.tar.gz
+Source1:        http://downloads.sourceforge.net/matplotlib/mpl_sampledata-%{version}.tar.gz
 Source2:        setup.cfg
-Patch0:		matplotlib-1.0.1-plot_directive.patch
+Patch0:         matplotlib-1.0.1-plot_directive.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -41,9 +41,9 @@ Requires:       dejavu-sans-fonts
 
 %description
 Matplotlib is a pure python plotting library with the goal of making
-publication quality plots using a syntax familiar to matlab users. The
-library uses Numeric for handling large data sets and supports a variety
-of output backends
+publication quality plots using a syntax familiar to Matlab users. The
+library uses numpy for handling large data sets and supports a variety
+of output back-ends.
 
 
 %package        tk
@@ -70,11 +70,11 @@ BuildRequires:  wxPython-devel
 Summary:        Documentation files for python-matplotlib
 Group:          Documentation
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-BuildRequires:	python-sphinx
-BuildRequires:	tex(latex)
-BuildRequires:	dvipng
+BuildRequires:  python-sphinx
+BuildRequires:  tex(latex)
+BuildRequires:  dvipng
 BuildRequires:  PyQt4
-BuildRequires:	python-basemap
+BuildRequires:  python-basemap
 # Some of the docs don't build as python-xlwt is needed. However the review
 # request isn't yet complete for this package. See:
 # https://bugzilla.redhat.com/show_bug.cgi?id=613766 
@@ -158,6 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Feb 25 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-6
+- Spec file cleanups to silence some rpmlint warnings
+
 * Mon Feb 21 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-5
 - Add default attr to doc sub-package file list
 - No longer designate -doc subpackage as noarch
@@ -270,7 +273,7 @@ rm -rf $RPM_BUILD_ROOT
 - Update to 0.90.0
 
 * Tue Jan  5 2007 Orion Poplawski <orion@cora.nwra.com> 0.87.7-4
-- Add examples to %docs
+- Add examples to %%docs
 
 * Mon Dec 11 2006 Jef Spaleta <jspaleta@gmail.com> 0.87.7-3
 - Release bump for rebuild against python 2.5 in devel tree
@@ -351,7 +354,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Jun 30 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-2
 - Rename to python-matplotlib
 - Remove unneeded Requires: python
-- Add private directories to %files
+- Add private directories to %%files
 
 * Tue Jun 28 2005 Orion Poplawski <orion@cora.nwra.com> 0.82-1
 - Initial package for Fedora Extras
