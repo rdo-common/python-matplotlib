@@ -16,7 +16,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -111,9 +111,10 @@ echo "examples.directory : %{sampledatadir}" >> matplotlibrc
 # This really does need to be ran twice
 export PYTHONPATH=%{libpath}
 %{__python} make.py --small html && %{__python} make.py --small html
-rm -f html/.buildinfo
-chmod -x html/pyplots/make.py
-sed -i 's/\r//' html/_sources/devel/add_new_projection.txt
+rm -f build/html/.buildinfo
+chmod -x build/html/pyplots/make.py
+sed -i 's/\r//' build/html/_sources/devel/add_new_projection.txt
+sed -i 's/\r//' build/html/examples/api/font_family_rc.py
 popd
 %endif
 
@@ -163,6 +164,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-8
+- Fix spec file typos so package builds
+
 * Fri Feb 25 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-7
 - Remove a debugging echo statement from the spec file
 - Fix some line endings and permissions in -doc sub-package
