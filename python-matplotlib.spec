@@ -8,15 +8,15 @@
 }
 
 # We include capability for building a doc subpackage for
-# documentation. However, building the documentation requires python-basemap,
-# and python-basemap requires python-matplotlib to build, so we have a
-# circular dependence, and so we need to be able to turn off building of the
-# documents
-%global withdocs 1
+# documentation. However, building the html documentation requires
+# python-basemap, and python-basemap requires python-matplotlib to build, so
+# we have a circular dependence, and so we need to be able to turn off
+# building of the html documents
+%global withhtmldocs 1
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -27,13 +27,15 @@ URL:            http://sourceforge.net/projects/matplotlib
 #sha1sum matplotlib-1.0.1-without-gpc.tar.gz
 #a8ccbf4c4b9b90c773380cac83e792673837d3de  matplotlib-1.0.1-without-gpc.tar.gz
 Source0:        matplotlib-%{version}-without-gpc.tar.gz
+%if %{withhtmldocs}
 Source1:        http://downloads.sourceforge.net/matplotlib/mpl_sampledata-%{version}.tar.gz
+%endif
 Source2:        setup.cfg
+# This patch taken from upstream SVN and will not be needed for releases later than 1.0.1
 Patch0:         matplotlib-1.0.1-plot_directive.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
-BuildRequires:  pygtk2-devel, gtk2-devel, tkinter, tk-devel
+BuildRequires:  pygtk2-devel, gtk2-devel
 BuildRequires:  pytz, python-dateutil, numpy
 Requires:       numpy, pytz, python-dateutil
 Requires:       pycairo >= 1.2.0
@@ -50,6 +52,7 @@ of output back-ends.
 Summary:        Tk backend for python-matplotlib
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
+BuildRequires:  tkinter, tk-devel
 Requires:       tkinter
 
 %description    tk
@@ -65,11 +68,11 @@ BuildRequires:  wxPython-devel
 %description    wx
 %{summary}
 
-%if %{withdocs}
 %package        doc
 Summary:        Documentation files for python-matplotlib
 Group:          Documentation
 Requires:       %{name}%{?_isa} = %{version}-%{release}
+%if %{withhtmldocs}
 BuildRequires:  python-sphinx
 BuildRequires:  tex(latex)
 BuildRequires:  dvipng
@@ -79,37 +82,38 @@ BuildRequires:  python-basemap
 # request isn't yet complete for this package. See:
 # https://bugzilla.redhat.com/show_bug.cgi?id=613766 
 # BuildRequires: python-xlwt
+%endif
 
 %description    doc
 %{summary}
-%endif
 
 %prep
+%if %{withhtmldocs}
 %setup -q -n matplotlib-%{version} -b1
+%else
+%setup -q -n matplotlib-%{version}
+%endif
+
 %patch0 -p1
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
-# Ensure all example files are non-executable so that the -doc package doesn't
-# drag in dependencies
-find examples -name '*.py' -exec chmod a-x '{}' \;
-
-# Fix line ending in this example file
-sed -i 's/\r//' examples/api/font_family_rc.py
-
-%build
 cp %{SOURCE2} ./setup.cfg
-%{__python} setup.py build
 
-# Build html documentation
-%if %{withdocs}
-%global py_ver %(echo `python -c "import sys; sys.stdout.write(sys.version[:3])"`)
-%global sampledatadir %{_builddir}/mpl_sampledata-%{version}
-%global libpath %{_builddir}/matplotlib-%{version}/build/lib.linux-%{_arch}-%{py_ver}
+%if %{withhtmldocs}
 pushd doc
 echo "examples.download : False" >> matplotlibrc
-echo "examples.directory : %{sampledatadir}" >> matplotlibrc
+echo "examples.directory : %{_builddir}/mpl_sampledata-%{version}" >> matplotlibrc
+popd
+%endif
+
+%build
+%{__python} setup.py build
+
+%if %{withhtmldocs}
+pushd doc
+%global py_ver %(echo `python -c "import sys; sys.stdout.write(sys.version[:3])"`)
+export PYTHONPATH=%{_builddir}/matplotlib-%{version}/build/lib.linux-%{_arch}-%{py_ver}
 # This really does need to be ran twice
-export PYTHONPATH=%{libpath}
 %{__python} make.py --small html && %{__python} make.py --small html
 rm -f build/html/.buildinfo
 chmod -x build/html/pyplots/make.py
@@ -117,6 +121,13 @@ sed -i 's/\r//' build/html/_sources/devel/add_new_projection.txt
 sed -i 's/\r//' build/html/examples/api/font_family_rc.py
 popd
 %endif
+
+# Ensure all example files are non-executable so that the -doc package doesn't
+# drag in dependencies
+find examples -name '*.py' -exec chmod a-x '{}' \;
+
+# Fix line ending in this example file
+sed -i 's/\r//' examples/api/font_family_rc.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -156,14 +167,17 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/matplotlib/backends/backend_wx.py*
 %{python_sitearch}/matplotlib/backends/backend_wxagg.py*
 
-%if %{withdocs}
 %files doc
 %defattr(-,root,root,-)
-%doc doc/build/html
 %doc examples
+%if %{withhtmldocs}
+%doc doc/build/html
 %endif
 
 %changelog
+* Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-10
+- Spec file cleanups for readability
+
 * Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-9
 - Bump and rebuild
 
