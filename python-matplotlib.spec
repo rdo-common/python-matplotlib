@@ -16,7 +16,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -164,6 +164,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-9
+- Bump and rebuild
+
 * Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-8
 - Fix spec file typos so package builds
 
