@@ -11,12 +11,15 @@
 # documentation. However, building the html documentation requires
 # python-basemap, and python-basemap requires python-matplotlib to build, so
 # we have a circular dependence, and so we need to be able to turn off
-# building of the html documents
+# building of the html documents. Note that when building the html docs,
+# python-basemap will pull in the existing python-matplotlib from the
+# repos. So, it's important to set PYTHONPATH to use the newly built modules
+# from this package. 
 %global withhtmldocs 1
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -111,8 +114,8 @@ popd
 
 %if %{withhtmldocs}
 pushd doc
-%global py_ver %(echo `python -c "import sys; sys.stdout.write(sys.version[:3])"`)
-export PYTHONPATH=%{_builddir}/matplotlib-%{version}/build/lib.linux-%{_arch}-%{py_ver}
+# Set PYTHONPATH in order to use the just built modules
+export PYTHONPATH=`find %{_builddir} -name lib.linux*`
 # This really does need to be ran twice
 %{__python} make.py --small html && %{__python} make.py --small html
 rm -f build/html/.buildinfo
@@ -175,6 +178,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-11
+- Set PYTHONPATH during html doc building using find to prevent broken builds
+
 * Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-10
 - Spec file cleanups for readability
 
