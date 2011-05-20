@@ -19,7 +19,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -36,13 +36,18 @@ Source1:        http://downloads.sourceforge.net/matplotlib/mpl_sampledata-%{ver
 Source2:        setup.cfg
 # This patch taken from upstream SVN and will not be needed for releases later than 1.0.1
 Patch0:         matplotlib-1.0.1-plot_directive.patch
+Patch1:         matplotlib-1.0.1-noagg.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  pygtk2-devel, gtk2-devel
 BuildRequires:  pytz, python-dateutil, numpy
+BuildRequires:  agg-devel
+BuildRequires:  pyparsing
 Requires:       numpy, pytz, python-dateutil
 Requires:       pycairo >= 1.2.0
 Requires:       dejavu-sans-fonts
+Requires:       dvipng
+Requires:       pyparsing
 
 %description
 Matplotlib is a pure python plotting library with the goal of making
@@ -96,8 +101,15 @@ BuildRequires:  python-basemap
 %else
 %setup -q -n matplotlib-%{version}
 %endif
-
 %patch0 -p1
+
+# Remove bundled libraries
+rm -r agg24 lib/matplotlib//pyparsing.py
+
+# Remove references to bundled libraries
+%patch1 -p1 -b .noagg
+sed -i -e s/matplotlib\.pyparsing/pyparsing/g lib/matplotlib/*.py
+
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 cp %{SOURCE2} ./setup.cfg
@@ -178,6 +190,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri May 20 2011 Orion Poplawski <orion@cora.nwra.com> - 1.0.1-12
+- Add Requires dvipng (Bug 684836)
+- Build against system agg (Bug 612807)
+- Use system pyparsing (Bug 702160)
+
 * Sat Feb 26 2011 Jonathan G. Underwood <jonathan.underwood@gmail.com> - 1.0.1-11
 - Set PYTHONPATH during html doc building using find to prevent broken builds
 
