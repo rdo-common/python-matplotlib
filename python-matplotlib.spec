@@ -19,7 +19,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -37,6 +37,7 @@ Source2:        setup.cfg
 # This patch taken from upstream SVN and will not be needed for releases later than 1.0.1
 Patch0:         matplotlib-1.0.1-plot_directive.patch
 Patch1:         matplotlib-1.0.1-noagg.patch
+Patch2:		0001-Bugfix-propagate-timezone-info-in-plot_date-xaxis_da.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  pygtk2-devel, gtk2-devel
@@ -102,6 +103,7 @@ BuildRequires:  python-basemap
 %setup -q -n matplotlib-%{version}
 %endif
 %patch0 -p1
+%patch2 -p1
 
 # Remove bundled libraries
 rm -r agg24 lib/matplotlib//pyparsing.py
@@ -190,6 +192,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Sep 15 2011 Jef Spaleta <jspaleta@fedoraproject.org> - 1.0.1-13
+- apply upstream bugfix for timezone formatting (Bug 735677) 
+
 * Fri May 20 2011 Orion Poplawski <orion@cora.nwra.com> - 1.0.1-12
 - Add Requires dvipng (Bug 684836)
 - Build against system agg (Bug 612807)
