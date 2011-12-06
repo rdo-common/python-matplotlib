@@ -19,7 +19,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -40,6 +40,12 @@ Patch1:         matplotlib-1.0.1-noagg.patch
 Patch2:		0001-Bugfix-propagate-timezone-info-in-plot_date-xaxis_da.patch
 # fix build when Tkinter doesn't return an expected value in __version__ (FTBFS)
 Patch3:         matplotlib-1.0.1-tkinter.patch
+
+# Fix building against libpng 1.5
+# Based on:
+#   https://github.com/matplotlib/matplotlib/commit/45c46672648e3b4a277bf7ff42b3baf56a98bcec
+Patch4:         use-png-accessor-functions.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
 BuildRequires:  pygtk2-devel, gtk2-devel
@@ -107,6 +113,7 @@ BuildRequires:  python-basemap
 %patch0 -p1
 %patch2 -p1
 %patch3 -p1 -b .tkinter
+%patch4 -p1
 
 # Remove bundled libraries
 rm -r agg24 lib/matplotlib//pyparsing.py
@@ -195,6 +202,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Dec  6 2011 David Malcolm <dmalcolm@redhat.com> - 1.0.1-17
+- fix the build against libpng 1.5
+
 * Tue Dec  6 2011 David Malcolm <dmalcolm@redhat.com> - 1.0.1-16
 - fix egg-info conditional for RHEL
 
