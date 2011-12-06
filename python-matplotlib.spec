@@ -42,6 +42,7 @@ Patch2:		0001-Bugfix-propagate-timezone-info-in-plot_date-xaxis_da.patch
 Patch3:         matplotlib-1.0.1-tkinter.patch
 
 # Fix building against libpng 1.5
+#   https://github.com/matplotlib/matplotlib/issues/234
 # Based on:
 #   https://github.com/matplotlib/matplotlib/commit/45c46672648e3b4a277bf7ff42b3baf56a98bcec
 Patch4:         use-png-accessor-functions.patch
