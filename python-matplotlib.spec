@@ -19,7 +19,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -195,6 +195,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Dec 06 2011 Adam Jackson <ajax@redhat.com> - 1.0.1-15
+- Rebuild for new libpng
+
 * Mon Oct 31 2011 Dan Horák <dan[at]danny.cz> - 1.0.1-14
 - fix build with new Tkinter which doesn't return an expected value in __version__
 
