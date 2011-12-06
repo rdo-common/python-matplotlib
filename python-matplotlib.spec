@@ -19,7 +19,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -164,7 +164,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc license/LICENSE_PAINT license/LICENSE_PIL
 %doc CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
 %doc PKG-INFO TODO
-%if 0%{?fedora} >= 9
+%if 0%{?fedora} >= 9 || 0%{?rhel} >= 6
 %{python_sitearch}/*egg-info
 %endif
 %{python_sitearch}/matplotlib/
@@ -195,6 +195,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Dec  6 2011 David Malcolm <dmalcolm@redhat.com> - 1.0.1-16
+- fix egg-info conditional for RHEL
+
 * Tue Dec 06 2011 Adam Jackson <ajax@redhat.com> - 1.0.1-15
 - Rebuild for new libpng
 
