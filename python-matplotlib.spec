@@ -19,7 +19,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        17%{?dist}
+Release:        18%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -203,6 +203,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.1-18
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Tue Dec  6 2011 David Malcolm <dmalcolm@redhat.com> - 1.0.1-17
 - fix the build against libpng 1.5
 
