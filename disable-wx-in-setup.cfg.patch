@@ -1,0 +1,12 @@
+diff -up matplotlib-1.0.1/setup.cfg.disable-wx-in-setup.cfg matplotlib-1.0.1/setup.cfg
+--- matplotlib-1.0.1/setup.cfg.disable-wx-in-setup.cfg	2012-04-18 15:54:40.408040980 -0400
++++ matplotlib-1.0.1/setup.cfg	2012-04-18 15:54:40.412040931 -0400
+@@ -57,7 +57,7 @@ configobj = False
+ gtk = True
+ gtkagg = True
+ tkagg = True
+-wxagg = True
++wxagg = False
+ 
+ [rc_options]
+ # User-configurable options

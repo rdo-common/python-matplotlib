@@ -17,9 +17,16 @@
 # from this package. 
 %global withhtmldocs 1
 
+# On RHEL 7 onwards, don't build the wx:
+%if 0%{?rhel} >= 7
+%global with_wx 0
+%else
+%global with_wx 1
+%endif
+
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        19%{?dist}
+Release:        20%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -46,6 +53,9 @@ Patch3:         matplotlib-1.0.1-tkinter.patch
 # Based on:
 #   https://github.com/matplotlib/matplotlib/commit/45c46672648e3b4a277bf7ff42b3baf56a98bcec
 Patch4:         use-png-accessor-functions.patch
+
+# Conditionally applied, when disabling wx support:
+Patch5:         disable-wx-in-setup.cfg.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
@@ -76,6 +86,7 @@ Requires:       tkinter
 %description    tk
 %{summary}
 
+%if 0%{with_wx}
 %package        wx
 Summary:        wxPython backend for python-matplotlib
 Group:          Development/Libraries
@@ -85,6 +96,7 @@ BuildRequires:  wxPython-devel
 
 %description    wx
 %{summary}
+%endif # if 0%{with_wx}
 
 %package        doc
 Summary:        Documentation files for python-matplotlib
@@ -126,6 +138,10 @@ sed -i -e s/matplotlib\.pyparsing/pyparsing/g lib/matplotlib/*.py
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 cp %{SOURCE2} ./setup.cfg
+%if !0%{with_wx}
+# Patch the new copy of setup.cfg to remove wx support:
+%patch5 -p1
+%endif
 
 %if %{withhtmldocs}
 pushd doc
@@ -190,10 +206,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
+%if 0%{with_wx}
 %files wx
 %defattr(-,root,root,-)
 %{python_sitearch}/matplotlib/backends/backend_wx.py*
 %{python_sitearch}/matplotlib/backends/backend_wxagg.py*
+%endif # if 0%{with_wx}
+
 
 %files doc
 %defattr(-,root,root,-)
@@ -203,6 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Apr 18 2012 David Malcolm <dmalcolm@redhat.com> - 1.0.1-20
+- remove wx support for rhel >= 7
+
 * Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.1-19
 - Rebuilt for c++ ABI breakage
 
