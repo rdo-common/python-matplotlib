@@ -26,7 +26,7 @@
 
 Name:           python-matplotlib
 Version:        1.0.1
-Release:        20%{?dist}
+Release:        21%{?dist}
 Summary:        Python plotting library
 
 Group:          Development/Libraries
@@ -222,6 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.1-21
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Wed Apr 18 2012 David Malcolm <dmalcolm@redhat.com> - 1.0.1-20
 - remove wx support for rhel >= 7
 
