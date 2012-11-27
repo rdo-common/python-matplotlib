@@ -9,7 +9,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -41,6 +41,7 @@ Requires:       pycairo
 Requires:       pyparsing
 Requires:       python-dateutil
 Requires:       pytz
+Obsoletes:	%{name}-wx < %{version}-%{release}
 
 %description
 Matplotlib is a python 2D plotting library which produces publication
@@ -232,6 +233,9 @@ popd
 %endif
 
 %changelog
+* Tue Nov 27 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-4
+- Obsolete python-matplotlib-wx for clean updates.
+
 * Tue Nov 27 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-3
 - Enable python 3 in fc18 as build requires are now available (#879731)
 
