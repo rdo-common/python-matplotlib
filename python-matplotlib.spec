@@ -1,196 +1,190 @@
-%if ! (0%{?rhel} > 5)
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-%endif
-
-%{?filter_setup:
-%filter_provides_in %{python_sitearch}/.*\.so$
-%filter_setup
-}
-
-# We include capability for building a doc subpackage for
-# documentation. However, building the html documentation requires
-# python-basemap, and python-basemap requires python-matplotlib to build, so
-# we have a circular dependence, and so we need to be able to turn off
-# building of the html documents. Note that when building the html docs,
-# python-basemap will pull in the existing python-matplotlib from the
-# repos. So, it's important to set PYTHONPATH to use the newly built modules
-# from this package. 
-%global withhtmldocs 1
-
-# On RHEL 7 onwards, don't build the wx:
-%if 0%{?rhel} >= 7
-%global with_wx 0
+%if 0%{?fedora} >= 18
+%global with_python3            1
+%global basepy3dir              %(echo ../`basename %{py3dir}`)
 %else
-%global with_wx 1
+%global with_python3            0
 %endif
+%global __provides_exclude_from	.*/site-packages/.*\\.so$
+%global with_html               1
 
 Name:           python-matplotlib
-Version:        1.0.1
-Release:        21%{?dist}
-Summary:        Python plotting library
-
+Version:        1.2.0
+Release:        3%{?dist}
+Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
-URL:            http://sourceforge.net/projects/matplotlib
+URL:            http://matplotlib.org
 #Modified Sources to remove the one undistributable file
 #See generate-tarball.sh in fedora cvs repository for logic
-#sha1sum matplotlib-1.0.1-without-gpc.tar.gz
-#a8ccbf4c4b9b90c773380cac83e792673837d3de  matplotlib-1.0.1-without-gpc.tar.gz
+#sha1sum matplotlib-1.2.0-without-gpc.tar.gz
+#92ada4ef4e7374d67e46e30bfb08c3fed068d680  matplotlib-1.2.0-without-gpc.tar.gz
 Source0:        matplotlib-%{version}-without-gpc.tar.gz
-%if %{withhtmldocs}
-Source1:        http://downloads.sourceforge.net/matplotlib/mpl_sampledata-%{version}.tar.gz
-%endif
-Source2:        setup.cfg
-# This patch taken from upstream SVN and will not be needed for releases later than 1.0.1
-Patch0:         matplotlib-1.0.1-plot_directive.patch
-Patch1:         matplotlib-1.0.1-noagg.patch
-Patch2:		0001-Bugfix-propagate-timezone-info-in-plot_date-xaxis_da.patch
-# fix build when Tkinter doesn't return an expected value in __version__ (FTBFS)
-Patch3:         matplotlib-1.0.1-tkinter.patch
 
-# Fix building against libpng 1.5
-#   https://github.com/matplotlib/matplotlib/issues/234
-# Based on:
-#   https://github.com/matplotlib/matplotlib/commit/45c46672648e3b4a277bf7ff42b3baf56a98bcec
-Patch4:         use-png-accessor-functions.patch
+Patch0:         %{name}-noagg.patch
+Patch1:         %{name}-tk.patch
 
-# Conditionally applied, when disabling wx support:
-Patch5:         disable-wx-in-setup.cfg.patch
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  python-devel, freetype-devel, libpng-devel, zlib-devel
-BuildRequires:  pygtk2-devel, gtk2-devel
-BuildRequires:  pytz, python-dateutil, numpy
 BuildRequires:  agg-devel
+BuildRequires:  freetype-devel
+BuildRequires:  gtk2-devel
+BuildRequires:  libpng-devel
+BuildRequires:  numpy
+BuildRequires:  pycairo-devel
 BuildRequires:  pyparsing
-Requires:       numpy, pytz, python-dateutil
-Requires:       pycairo >= 1.2.0
+BuildRequires:  python-dateutil
+BuildRequires:  python2-devel
+BuildRequires:  pytz
+BuildRequires:  zlib-devel
 Requires:       dejavu-sans-fonts
 Requires:       dvipng
+Requires:       numpy
+Requires:       pycairo
 Requires:       pyparsing
+Requires:       python-dateutil
+Requires:       pytz
 
 %description
-Matplotlib is a pure python plotting library with the goal of making
-publication quality plots using a syntax familiar to Matlab users. The
-library uses numpy for handling large data sets and supports a variety
-of output back-ends.
+Matplotlib is a python 2D plotting library which produces publication
+quality figures in a variety of hardcopy formats and interactive
+environments across platforms. matplotlib can be used in python
+scripts, the python and ipython shell, web application servers, and
+six graphical user interface toolkits.
 
+Matplotlib tries to make easy things easy and hard things possible.
+You can generate plots, histograms, power spectra, bar charts,
+errorcharts, scatterplots, etc, with just a few lines of code.
 
 %package        tk
 Summary:        Tk backend for python-matplotlib
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-BuildRequires:  tkinter, tk-devel
+BuildRequires:  tcl-devel
+BuildRequires:  tkinter
+BuildRequires:  tk-devel
 Requires:       tkinter
 
 %description    tk
 %{summary}
 
-%if 0%{with_wx}
-%package        wx
-Summary:        wxPython backend for python-matplotlib
-Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       wxPython
-BuildRequires:  wxPython-devel
-
-%description    wx
-%{summary}
-%endif # if 0%{with_wx}
-
 %package        doc
 Summary:        Documentation files for python-matplotlib
 Group:          Documentation
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-%if %{withhtmldocs}
+%if %{with_html}
 BuildRequires:  python-sphinx
 BuildRequires:  tex(latex)
 BuildRequires:  dvipng
-BuildRequires:  PyQt4
-BuildRequires:  python-basemap
-# Some of the docs don't build as python-xlwt is needed. However the review
-# request isn't yet complete for this package. See:
-# https://bugzilla.redhat.com/show_bug.cgi?id=613766 
-# BuildRequires: python-xlwt
 %endif
 
 %description    doc
 %{summary}
 
-%prep
-%if %{withhtmldocs}
-%setup -q -n matplotlib-%{version} -b1
-%else
-%setup -q -n matplotlib-%{version}
+%if %{with_python3}
+%package -n     python3-matplotlib
+Summary:        Python 2D plotting library
+Group:          Development/Libraries
+BuildRequires:  python3-cairo
+BuildRequires:  python3-dateutil
+BuildRequires:  python3-devel
+BuildRequires:  python3-gobject
+BuildRequires:  python3-numpy
+BuildRequires:  python3-pyparsing
+BuildRequires:  python3-pytz
+BuildRequires:  python3-six
+Requires:       python3-numpy
+Requires:       python3-cairo
+Requires:       python3-pyparsing
+Requires:       python3-dateutil
+Requires:       python3-pytz
+
+%description -n python3-matplotlib
+Matplotlib is a python 2D plotting library which produces publication
+quality figures in a variety of hardcopy formats and interactive
+environments across platforms. matplotlib can be used in python
+scripts, the python and ipython shell, web application servers, and
+six graphical user interface toolkits.
+
+Matplotlib tries to make easy things easy and hard things possible.
+You can generate plots, histograms, power spectra, bar charts,
+errorcharts, scatterplots, etc, with just a few lines of code.
+
+%package -n     python3-matplotlib-tk
+Summary:        Tk backend for python3-matplotlib
+Group:          Development/Libraries
+Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
+BuildRequires:  python3-tkinter
+Requires:       python3-tkinter
+
+%description -n python3-matplotlib-tk
+%{summary}
 %endif
-%patch0 -p1
-%patch2 -p1
-%patch3 -p1 -b .tkinter
-%patch4 -p1
+
+%prep
+%setup -q -n matplotlib-%{version}
 
 # Remove bundled libraries
-rm -r agg24 lib/matplotlib//pyparsing.py
+rm -r agg24 lib/matplotlib/pyparsing_py?.py
 
 # Remove references to bundled libraries
-%patch1 -p1 -b .noagg
-sed -i -e s/matplotlib\.pyparsing/pyparsing/g lib/matplotlib/*.py
+%patch0 -p1 -b .noagg
+sed -i -e s/matplotlib\.pyparsing_py./pyparsing/g lib/matplotlib/*.py
+
+# Correct tcl/tk detection
+%patch1 -p1 -b .tk
+sed -i -e 's|@@@libdir@@@|%{_libdir}|' setupext.py
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
-cp %{SOURCE2} ./setup.cfg
-%if !0%{with_wx}
-# Patch the new copy of setup.cfg to remove wx support:
-%patch5 -p1
-%endif
-
-%if %{withhtmldocs}
-pushd doc
-echo "examples.download : False" >> matplotlibrc
-echo "examples.directory : %{_builddir}/mpl_sampledata-%{version}" >> matplotlibrc
-popd
+%if %{?with_python3}
+rm -rf %{py3dir}
+cp -a . %{py3dir}
 %endif
 
 %build
-%{__python} setup.py build
-
-%if %{withhtmldocs}
+%{__python2} setup.py build
+%if %{with_html}
+# Need to make built matplotlib libs available for the sphinx extensions:
 pushd doc
-# Set PYTHONPATH in order to use the just built modules
-export PYTHONPATH=`find %{_builddir} -name lib.linux*`
-# This really does need to be ran twice
-%{__python} make.py --small html && %{__python} make.py --small html
-rm -f build/html/.buildinfo
-chmod -x build/html/pyplots/make.py
-sed -i 's/\r//' build/html/_sources/devel/add_new_projection.txt
-sed -i 's/\r//' build/html/examples/api/font_family_rc.py
+    export PYTHONPATH=`realpath ../build/lib.linux*`
+    %{__python2} make.py html
+popd
+%endif
+# Ensure all example files are non-executable so that the -doc
+# package doesn't drag in dependencies
+find examples -name '*.py' -exec chmod a-x '{}' \;
+
+%if %{with_python3}
+pushd %{py3dir}
+    %{__python3} setup.py build
+    # documentation cannot be built with python3 due to syntax errors
+    # and building with python 2 exits with cryptic error messages
 popd
 %endif
 
-# Ensure all example files are non-executable so that the -doc package doesn't
-# drag in dependencies
-find examples -name '*.py' -exec chmod a-x '{}' \;
-
-# Fix line ending in this example file
-sed -i 's/\r//' examples/api/font_family_rc.py
-
 %install
-rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
 chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
 rm -rf $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data/fonts
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+%if %{with_python3}
+pushd %{py3dir}
+    %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+    chmod +x $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/dates.py
+    rm -rf $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data/fonts
+    rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
+popd
+%endif
 
 %files
-%defattr(-,root,root,-)
-%doc README.txt license/LICENSE license/LICENSE_enthought.txt
-%doc license/LICENSE_PAINT license/LICENSE_PIL
-%doc CHANGELOG CXX INSTALL INTERACTIVE KNOWN_BUGS
-%doc PKG-INFO TODO
-%if 0%{?fedora} >= 9 || 0%{?rhel} >= 6
+%doc README.txt
+%doc lib/dateutil_py2/LICENSE
+%doc lib/matplotlib/mpl-data/fonts/ttf/LICENSE_STIX
+%doc lib/pytz/LICENSE.txt
+%doc CHANGELOG
+%doc CXX
+%doc INSTALL
+%doc PKG-INFO
+%doc TODO
 %{python_sitearch}/*egg-info
-%endif
 %{python_sitearch}/matplotlib/
 %{python_sitearch}/mpl_toolkits/
 %{python_sitearch}/pylab.py*
@@ -201,29 +195,85 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{python_sitearch}/matplotlib/backends/backend_wxagg.*
 
 %files tk
-%defattr(-,root,root,-)
 %{python_sitearch}/matplotlib/backends/backend_tkagg.py*
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
-%if 0%{with_wx}
-%files wx
-%defattr(-,root,root,-)
-%{python_sitearch}/matplotlib/backends/backend_wx.py*
-%{python_sitearch}/matplotlib/backends/backend_wxagg.py*
-%endif # if 0%{with_wx}
-
-
 %files doc
-%defattr(-,root,root,-)
 %doc examples
-%if %{withhtmldocs}
-%doc doc/build/html
+%if %{with_html}
+%doc doc/build/html/*
+%endif
+
+%if %{with_python3}
+%files -n python3-matplotlib
+%doc %{basepy3dir}/README.txt
+%doc %{basepy3dir}/lib/dateutil_py3/LICENSE
+%doc %{basepy3dir}/lib/matplotlib/mpl-data/fonts/ttf/LICENSE_STIX
+%doc %{basepy3dir}/lib/pytz/LICENSE.txt
+%doc %{basepy3dir}/CHANGELOG
+%doc %{basepy3dir}/CXX
+%doc %{basepy3dir}/INSTALL
+%doc %{basepy3dir}/PKG-INFO
+%doc %{basepy3dir}/TODO
+%{python3_sitearch}/*egg-info
+%{python3_sitearch}/matplotlib/
+%{python3_sitearch}/mpl_toolkits/
+%{python3_sitearch}/pylab.py*
+%{python3_sitearch}/__pycache__/*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_tkagg.*
+%exclude %{python3_sitearch}/matplotlib/backends/tkagg.*
+%exclude %{python3_sitearch}/matplotlib/backends/_tkagg.*
+
+%files -n python3-matplotlib-tk
+%{python3_sitearch}/matplotlib/backends/backend_tkagg.py*
+%{python3_sitearch}/matplotlib/backends/tkagg.*
+%{python3_sitearch}/matplotlib/backends/_tkagg.*
 %endif
 
 %changelog
+* Tue Nov 27 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-3
+- Enable python 3 in fc18 as build requires are now available (#879731)
+
+* Thu Nov 22 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-2
+- Build python3 only on f19 or newer (#837156)
+- Build requires python3-six if building python3 support (#837156)
+
+* Thu Nov 22 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-1
+- Update to version 1.2.0
+- Revert to regenerate tarball with generate-tarball.sh (#837156)
+- Assume update to 1.2.0 is for recent releases
+- Remove %%defattr
+- Remove %%clean
+- Use simpler approach to build html documentation
+- Do not use custom/outdated setup.cfg
+- Put one BuildRequires per line
+- Enable python3 support
+- Cleanup spec as wx backend is no longer supported
+- Use default agg backend
+- Fix bogus dates in changelog by assuming only week day was wrong
+
+* Fri Aug 17 2012 Jerry James <loganjerry@gmail.com> - 1.1.1-1
+- Update to version 1.1.1.
+- Remove obsolete spec file elements
+- Fix sourceforge URLs
+- Allow sample data to have a different version number than the sources
+- Don't bother removing problematic file since we remove entire agg24 directory
+- Fix building with pygtk in the absence of an X server
+- Don't install license text for bundled software that we don't bundle
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.1-21
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Tue Jul 3 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.1.0-1
+- Update to version 1.1.0.
+- Do not regenerate upstream tarball but remove problematic file in %%prep.
+- Remove non longer applicable/required patch0.
+- Rediff/rename -noagg patch.
+- Remove propagate-timezone-info-in-plot_date-xaxis_da patch already applied.
+- Remove tkinter patch now with critical code in a try block.
+- Remove png 1.5 patch as upstream is now png 1.5 aware.
+- Update file list.
 
 * Wed Apr 18 2012 David Malcolm <dmalcolm@redhat.com> - 1.0.1-20
 - remove wx support for rhel >= 7
@@ -345,7 +395,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Aug  6 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.3-1
 - Latest upstream release
 
-* Fri Jul  1 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.1-1
+* Tue Jul  1 2008 Jef Spaleta <jspaleta AT fedoraproject DOT org> - 0.98.1-1
 - Latest upstream release
 
 * Fri Mar  21 2008 Jef Spaleta <jspaleta[AT]fedoraproject org> - 0.91.2-2
@@ -384,7 +434,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Feb 09 2007 Orion Poplawski <orion@cora.nwra.com> 0.90.0-1
 - Update to 0.90.0
 
-* Tue Jan  5 2007 Orion Poplawski <orion@cora.nwra.com> 0.87.7-4
+* Fri Jan  5 2007 Orion Poplawski <orion@cora.nwra.com> 0.87.7-4
 - Add examples to %%docs
 
 * Mon Dec 11 2006 Jef Spaleta <jspaleta@gmail.com> 0.87.7-3

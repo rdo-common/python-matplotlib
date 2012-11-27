@@ -1,17 +1,7 @@
-diff -up matplotlib-1.0.1/MANIFEST.in.noagg matplotlib-1.0.1/MANIFEST.in
---- matplotlib-1.0.1/MANIFEST.in.noagg	2010-07-06 19:41:55.000000000 -0600
-+++ matplotlib-1.0.1/MANIFEST.in	2011-05-20 15:45:38.337580769 -0600
-@@ -18,6 +18,5 @@ recursive-include examples *
- recursive-include doc *
- recursive-include src  *.cpp *.c *.h *.m
- recursive-include CXX  *.cxx *.hxx *.c *.h
--recursive-include agg24 *
- recursive-include lib *
- recursive-include ttconv *.cpp *.h
-diff -up matplotlib-1.0.1/setupext.py.noagg matplotlib-1.0.1/setupext.py
---- matplotlib-1.0.1/setupext.py.noagg	2010-07-06 19:41:55.000000000 -0600
-+++ matplotlib-1.0.1/setupext.py	2011-05-20 16:11:56.977764688 -0600
-@@ -104,7 +104,6 @@ BUILT_GDK       = False
+diff -up matplotlib-1.2.0/setupext.py.orig matplotlib-1.2.0/setupext.py
+--- matplotlib-1.2.0/setupext.py.orig	2012-11-23 14:49:21.295712608 -0200
++++ matplotlib-1.2.0/setupext.py	2012-11-23 14:49:31.508712999 -0200
+@@ -96,7 +96,6 @@ BUILT_GDK       = False
  BUILT_PATH      = False
  BUILT_TRI       = False
  
@@ -19,7 +9,7 @@ diff -up matplotlib-1.0.1/setupext.py.noagg matplotlib-1.0.1/setupext.py
  TCL_TK_CACHE = None
  
  # for nonstandard installation/build with --prefix variable
-@@ -551,7 +550,8 @@ def add_agg_flags(module):
+@@ -621,7 +620,8 @@ def add_agg_flags(module):
      # before adding the freetype flags since -z comes later
      add_base_flags(module)
      add_numpy_flags(module)
@@ -29,7 +19,7 @@ diff -up matplotlib-1.0.1/setupext.py.noagg matplotlib-1.0.1/setupext.py
  
      # put these later for correct link order
      module.libraries.extend(std_libs)
-@@ -1251,17 +1251,7 @@ def build_agg(ext_modules, packages):
+@@ -1220,17 +1220,7 @@ def build_agg(ext_modules, packages):
      global BUILT_AGG
      if BUILT_AGG: return # only build it if you you haven't already
  
@@ -48,11 +38,12 @@ diff -up matplotlib-1.0.1/setupext.py.noagg matplotlib-1.0.1/setupext.py
      deps.extend(glob.glob('CXX/*.cxx'))
      deps.extend(glob.glob('CXX/*.c'))
      temp_copy('src/_backend_agg.cpp', 'src/backend_agg.cpp')
-@@ -1284,15 +1274,7 @@ def build_path(ext_modules, packages):
+@@ -1253,16 +1243,7 @@ def build_path(ext_modules, packages):
      global BUILT_PATH
      if BUILT_PATH: return # only build it if you you haven't already
  
 -    agg = (
+-           'agg_vcgen_contour.cpp',
 -           'agg_curves.cpp',
 -           'agg_bezier_arc.cpp',
 -           'agg_trans_affine.cpp',
@@ -65,7 +56,7 @@ diff -up matplotlib-1.0.1/setupext.py.noagg matplotlib-1.0.1/setupext.py
      deps.extend(glob.glob('CXX/*.c'))
  
      temp_copy('src/_path.cpp', 'src/path.cpp')
-@@ -1317,14 +1299,8 @@ def build_image(ext_modules, packages):
+@@ -1287,14 +1268,8 @@ def build_image(ext_modules, packages):
      global BUILT_IMAGE
      if BUILT_IMAGE: return # only build it if you you haven't already
  
