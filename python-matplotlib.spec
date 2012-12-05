@@ -194,13 +194,13 @@ popd
 %endif
 
 %install
-xvfb-run %{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+%{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
 chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
 rm -rf $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data/fonts
 
 %if %{with_python3}
 pushd %{py3dir}
-    xvfb-run %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+    %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
     chmod +x $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/dates.py
     rm -rf $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data/fonts
     rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
