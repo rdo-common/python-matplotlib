@@ -8,7 +8,7 @@ diff -up matplotlib-1.2.0/setupext.py.orig matplotlib-1.2.0/setupext.py
 -                "/usr/lib/tcl"+str(Tkinter.TclVersion),
 -                "/usr/lib"]
 +                "@@libdir@@/tcl"+str(Tkinter.TclVersion),
-+                "@@lib@@"]
++                "@@libdir@@"]
      tk_poss = [tk_lib_dir,
                  os.path.normpath(os.path.join(tk_lib_dir, '..')),
 -               "/usr/lib/tk"+str(Tkinter.TkVersion),

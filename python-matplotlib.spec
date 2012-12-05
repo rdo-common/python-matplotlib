@@ -9,7 +9,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -29,19 +29,21 @@ BuildRequires:  gtk2-devel
 BuildRequires:  libpng-devel
 BuildRequires:  numpy
 BuildRequires:  pycairo-devel
+BuildRequires:  pygtk2-devel
 BuildRequires:  pyparsing
 BuildRequires:  python-dateutil
 BuildRequires:  python2-devel
 BuildRequires:  pytz
+BuildRequires:  xorg-x11-server-Xvfb
 BuildRequires:  zlib-devel
 Requires:       dejavu-sans-fonts
 Requires:       dvipng
 Requires:       numpy
 Requires:       pycairo
+Requires:       pygtk2
 Requires:       pyparsing
 Requires:       python-dateutil
 Requires:       pytz
-Obsoletes:	%{name}-wx < %{version}-%{release}
 
 %description
 Matplotlib is a python 2D plotting library which produces publication
@@ -54,6 +56,16 @@ Matplotlib tries to make easy things easy and hard things possible.
 You can generate plots, histograms, power spectra, bar charts,
 errorcharts, scatterplots, etc, with just a few lines of code.
 
+%package        qt4
+Summary:        Qt4 backend for python-matplotlib
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+BuildRequires:  PyQt4-devel
+Requires:       PyQt4
+
+%description    qt4
+%{summary}
+
 %package        tk
 Summary:        Tk backend for python-matplotlib
 Group:          Development/Libraries
@@ -64,6 +76,16 @@ BuildRequires:  tk-devel
 Requires:       tkinter
 
 %description    tk
+%{summary}
+
+%package        wx
+Summary:        wxPython backend for python-matplotlib
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+BuildRequires:  wxPython-devel
+Requires:       wxPython
+
+%description    wx
 %{summary}
 
 %package        doc
@@ -108,6 +130,16 @@ Matplotlib tries to make easy things easy and hard things possible.
 You can generate plots, histograms, power spectra, bar charts,
 errorcharts, scatterplots, etc, with just a few lines of code.
 
+%package -n     python3-matplotlib-qt4
+Summary:        Qt4 backend for python3-matplotlib
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+BuildRequires:  python3-PyQt4-devel
+Requires:       python3-PyQt4
+
+%description -n python3-matplotlib-qt4
+%{summary}
+
 %package -n     python3-matplotlib-tk
 Summary:        Tk backend for python3-matplotlib
 Group:          Development/Libraries
@@ -131,7 +163,7 @@ sed -i -e s/matplotlib\.pyparsing_py./pyparsing/g lib/matplotlib/*.py
 
 # Correct tcl/tk detection
 %patch1 -p1 -b .tk
-sed -i -e 's|@@@libdir@@@|%{_libdir}|' setupext.py
+sed -i -e 's|@@libdir@@|%{_libdir}|' setupext.py
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
@@ -141,7 +173,7 @@ cp -a . %{py3dir}
 %endif
 
 %build
-%{__python2} setup.py build
+xvfb-run %{__python2} setup.py build
 %if %{with_html}
 # Need to make built matplotlib libs available for the sphinx extensions:
 pushd doc
@@ -155,20 +187,20 @@ find examples -name '*.py' -exec chmod a-x '{}' \;
 
 %if %{with_python3}
 pushd %{py3dir}
-    %{__python3} setup.py build
+    xvfb-run %{__python3} setup.py build
     # documentation cannot be built with python3 due to syntax errors
     # and building with python 2 exits with cryptic error messages
 popd
 %endif
 
 %install
-%{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+xvfb-run %{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
 chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
 rm -rf $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data/fonts
 
 %if %{with_python3}
 pushd %{py3dir}
-    %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+    xvfb-run %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
     chmod +x $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/dates.py
     rm -rf $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data/fonts
     rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
@@ -189,16 +221,26 @@ popd
 %{python_sitearch}/matplotlib/
 %{python_sitearch}/mpl_toolkits/
 %{python_sitearch}/pylab.py*
+%exclude %{python_sitearch}/matplotlib/backends/backend_qt4.*
+%exclude %{python_sitearch}/matplotlib/backends/backend_qt4agg.*
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
 %exclude %{python_sitearch}/matplotlib/backends/backend_wx.*
 %exclude %{python_sitearch}/matplotlib/backends/backend_wxagg.*
 
+%files qt4
+%{python_sitearch}/matplotlib/backends/backend_qt4.*
+%{python_sitearch}/matplotlib/backends/backend_qt4agg.*
+
 %files tk
 %{python_sitearch}/matplotlib/backends/backend_tkagg.py*
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
+
+%files wx
+%{python_sitearch}/matplotlib/backends/backend_wx.*
+%{python_sitearch}/matplotlib/backends/backend_wxagg.*
 
 %files doc
 %doc examples
@@ -222,9 +264,16 @@ popd
 %{python3_sitearch}/mpl_toolkits/
 %{python3_sitearch}/pylab.py*
 %{python3_sitearch}/__pycache__/*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_qt4.*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_qt4agg.*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/_tkagg.*
+
+%files -n python3-matplotlib-qt4
+%{python_sitearch}/matplotlib/backends/backend_qt4.*
+%{python_sitearch}/matplotlib/backends/backend_qt4agg.*
 
 %files -n python3-matplotlib-tk
 %{python3_sitearch}/matplotlib/backends/backend_tkagg.py*
@@ -233,6 +282,12 @@ popd
 %endif
 
 %changelog
+* Tue Dec 04 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-5
+- Reinstantiate wx backend for python2.x.
+- Run setup.py under xvfb-run to detect and default to gtk backend (#883502)
+- Split qt4 backend subpackage and add proper requires for it.
+- Correct wrong regex in tcl libdir patch.
+
 * Tue Nov 27 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-4
 - Obsolete python-matplotlib-wx for clean updates.
 
