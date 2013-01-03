@@ -7,9 +7,17 @@
 %global __provides_exclude_from	.*/site-packages/.*\\.so$
 %global with_html               1
 
+# On RHEL 7 onwards, don't build with wx:
+%if 0%{?rhel} >= 7
+%global with_wx 0
+%else
+%global with_wx 1
+%endif
+
+
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -78,6 +86,7 @@ Requires:       tkinter
 %description    tk
 %{summary}
 
+%if %{with_wx}
 %package        wx
 Summary:        wxPython backend for python-matplotlib
 Group:          Development/Libraries
@@ -87,6 +96,7 @@ Requires:       wxPython
 
 %description    wx
 %{summary}
+%endif # with_wx
 
 %package        doc
 Summary:        Documentation files for python-matplotlib
@@ -238,9 +248,11 @@ popd
 %{python_sitearch}/matplotlib/backends/tkagg.py*
 %{python_sitearch}/matplotlib/backends/_tkagg.so
 
+%if %{with_wx}
 %files wx
 %{python_sitearch}/matplotlib/backends/backend_wx.*
 %{python_sitearch}/matplotlib/backends/backend_wxagg.*
+%endif # with_wx
 
 %files doc
 %doc examples
@@ -282,6 +294,9 @@ popd
 %endif
 
 %changelog
+* Thu Jan  3 2013 David Malcolm <dmalcolm@redhat.com> - 1.2.0-6
+- remove wx support for rhel >= 7
+
 * Tue Dec 04 2012 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-5
 - Reinstantiate wx backend for python2.x.
 - Run setup.py under xvfb-run to detect and default to gtk backend (#883502)
