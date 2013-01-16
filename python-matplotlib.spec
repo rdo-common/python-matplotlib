@@ -17,7 +17,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -31,6 +31,8 @@ Source0:        matplotlib-%{version}-without-gpc.tar.gz
 Patch0:         %{name}-noagg.patch
 Patch1:         %{name}-tk.patch
 # http://sourceforge.net/mailarchive/message.php?msg_id=30202451
+# https://github.com/matplotlib/matplotlib/pull/1666
+# https://bugzilla.redhat.com/show_bug.cgi?id=896182
 Patch2:         %{name}-fontconfig.patch
 
 BuildRequires:  agg-devel
@@ -299,6 +301,10 @@ popd
 %endif
 
 %changelog
+* Wed Jan 16 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-8
+- Update fontconfig patch to apply issue found by upstream
+- Update fontconfig patch to apply issue with missing afm fonts (#896182)
+
 * Wed Jan 16 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-7
 - Use fontconfig by default (#885307)
 
