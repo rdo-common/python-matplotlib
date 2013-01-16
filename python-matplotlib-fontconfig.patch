@@ -1,0 +1,12 @@
+diff -up matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig matplotlib-1.2.0/lib/matplotlib/font_manager.py
+--- matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig	2013-01-16 13:42:53.917687221 -0200
++++ matplotlib-1.2.0/lib/matplotlib/font_manager.py	2013-01-16 13:43:13.987687989 -0200
+@@ -62,7 +62,7 @@ try:
+ except ImportError:
+     import pickle
+ 
+-USE_FONTCONFIG = False
++USE_FONTCONFIG = True
+ 
+ verbose = matplotlib.verbose
+ 

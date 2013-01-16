@@ -17,7 +17,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -30,6 +30,8 @@ Source0:        matplotlib-%{version}-without-gpc.tar.gz
 
 Patch0:         %{name}-noagg.patch
 Patch1:         %{name}-tk.patch
+# http://sourceforge.net/mailarchive/message.php?msg_id=30202451
+Patch2:         %{name}-fontconfig.patch
 
 BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
@@ -175,6 +177,9 @@ sed -i -e s/matplotlib\.pyparsing_py./pyparsing/g lib/matplotlib/*.py
 %patch1 -p1 -b .tk
 sed -i -e 's|@@libdir@@|%{_libdir}|' setupext.py
 
+# Use fontconfig by default
+%patch2 -p1 -b .fontconfig
+
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %if %{?with_python3}
@@ -294,6 +299,9 @@ popd
 %endif
 
 %changelog
+* Wed Jan 16 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-7
+- Use fontconfig by default (#885307)
+
 * Thu Jan  3 2013 David Malcolm <dmalcolm@redhat.com> - 1.2.0-6
 - remove wx support for rhel >= 7
 
