@@ -17,7 +17,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -56,6 +56,11 @@ Requires:       pygtk2
 Requires:       pyparsing
 Requires:       python-dateutil
 Requires:       pytz
+%if 0%{?fedora} >= 18
+BuildRequires:	stix-math-fonts
+%else
+BuildRequires:	stix-fonts
+%endif
 
 %description
 Matplotlib is a python 2D plotting library which produces publication
@@ -132,6 +137,11 @@ Requires:       python3-cairo
 Requires:       python3-pyparsing
 Requires:       python3-dateutil
 Requires:       python3-pytz
+%if 0%{?fedora} >= 18
+BuildRequires:	stix-math-fonts
+%else
+BuildRequires:	stix-fonts
+%endif
 
 %description -n python3-matplotlib
 Matplotlib is a python 2D plotting library which produces publication
@@ -301,6 +311,9 @@ popd
 %endif
 
 %changelog
+* Tue Apr  2 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-11
+- Make stix-fonts a requires of matplotlib (#928326)
+
 * Thu Mar 28 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-10
 - Use stix fonts avoid problems with missing cm fonts (#908717)
 - Correct type mismatch in python3 font_manager (#912843, #928326)
