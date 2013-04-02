@@ -57,9 +57,9 @@ Requires:       pyparsing
 Requires:       python-dateutil
 Requires:       pytz
 %if 0%{?fedora} >= 18
-BuildRequires:	stix-math-fonts
+Requires:	stix-math-fonts
 %else
-BuildRequires:	stix-fonts
+Requires:	stix-fonts
 %endif
 
 %description
@@ -138,9 +138,9 @@ Requires:       python3-pyparsing
 Requires:       python3-dateutil
 Requires:       python3-pytz
 %if 0%{?fedora} >= 18
-BuildRequires:	stix-math-fonts
+Requires:	stix-math-fonts
 %else
-BuildRequires:	stix-fonts
+Requires:	stix-fonts
 %endif
 
 %description -n python3-matplotlib
