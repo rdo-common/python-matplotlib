@@ -1,7 +1,7 @@
-diff -up matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig matplotlib-1.2.0/lib/matplotlib/font_manager.py
---- matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig	2013-02-24 22:50:54.932678576 -0300
-+++ matplotlib-1.2.0/lib/matplotlib/font_manager.py	2013-02-24 22:54:29.627686797 -0300
-@@ -62,7 +62,7 @@ try:
+diff -ur matplotlib-1.2.0.orig/lib/matplotlib/font_manager.py matplotlib-1.2.0/lib/matplotlib/font_manager.py
+--- matplotlib-1.2.0.orig/lib/matplotlib/font_manager.py	2012-10-31 01:11:14.000000000 +0100
++++ matplotlib-1.2.0/lib/matplotlib/font_manager.py	2013-04-03 01:50:34.433802284 +0200
+@@ -62,7 +62,7 @@
  except ImportError:
      import pickle
  
@@ -10,7 +10,7 @@ diff -up matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig matplotlib-1.2.0/l
  
  verbose = matplotlib.verbose
  
-@@ -771,7 +771,7 @@ class FontProperties(object):
+@@ -771,7 +771,7 @@
                  return float(self._size)
              except ValueError:
                  pass
@@ -19,7 +19,7 @@ diff -up matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig matplotlib-1.2.0/l
          return default_size * font_scalings.get(self._size)
  
      def get_file(self):
-@@ -991,7 +991,10 @@ class FontManager:
+@@ -991,7 +991,10 @@
          self.afmfiles = findSystemFonts(paths, fontext='afm') + \
              findSystemFonts(fontext='afm')
          self.afmlist = createFontList(self.afmfiles, fontext='afm')
@@ -31,7 +31,7 @@ diff -up matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig matplotlib-1.2.0/l
  
          self.ttf_lookup_cache = {}
          self.afm_lookup_cache = {}
-@@ -1002,7 +1005,8 @@ class FontManager:
+@@ -1002,7 +1005,8 @@
          """
          return self.__default_weight
  
@@ -41,19 +41,19 @@ diff -up matplotlib-1.2.0/lib/matplotlib/font_manager.py.orig matplotlib-1.2.0/l
          """
          Return the default font size.
          """
-@@ -1282,7 +1286,7 @@ if USE_FONTCONFIG and sys.platform != 'w
+@@ -1276,7 +1280,7 @@
+         except OSError:
+             return None
+         if pipe.returncode == 0:
+-            for match in _fc_match_regex.finditer(output):
++            for match in _fc_match_regex.finditer(output.decode("utf-8")):
+                 file = match.group(1)
+                 if os.path.splitext(file)[1][1:] in fontexts:
                      return file
-         return None
- 
--    _fc_match_regex = re.compile(r'\sfile:\s+"([^"]*)"')
-+    _fc_match_regex = re.compile(br'\sfile:\s+"([^"]*)"')
-     _fc_match_cache = {}
- 
-     def findfont(prop, fontext='ttf'):
-diff -up matplotlib-1.2.0/lib/matplotlib/mpl-data/matplotlibrc.orig matplotlib-1.2.0/lib/matplotlib/mpl-data/matplotlibrc
---- matplotlib-1.2.0/lib/matplotlib/mpl-data/matplotlibrc.orig	2013-02-24 22:55:55.684690093 -0300
-+++ matplotlib-1.2.0/lib/matplotlib/mpl-data/matplotlibrc	2013-02-24 22:57:00.146692561 -0300
-@@ -198,7 +198,7 @@ text.hinting_factor : 8 # Specifies the
+diff -ur matplotlib-1.2.0.orig/lib/matplotlib/mpl-data/matplotlibrc matplotlib-1.2.0/lib/matplotlib/mpl-data/matplotlibrc
+--- matplotlib-1.2.0.orig/lib/matplotlib/mpl-data/matplotlibrc	2012-11-08 17:39:20.000000000 +0100
++++ matplotlib-1.2.0/lib/matplotlib/mpl-data/matplotlibrc	2013-04-03 01:50:03.693755542 +0200
+@@ -198,7 +198,7 @@
  #mathtext.it  : serif:italic
  #mathtext.bf  : serif:bold
  #mathtext.sf  : sans

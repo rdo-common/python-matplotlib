@@ -17,7 +17,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -311,6 +311,9 @@ popd
 %endif
 
 %changelog
+* Wed Apr  3 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.2.0-12
+- Decode output of subprocess to utf-8 or regex will fail (#928326)
+
 * Tue Apr  2 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.2.0-11
 - Make stix-fonts a requires of matplotlib (#928326)
 
