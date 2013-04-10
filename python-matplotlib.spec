@@ -17,7 +17,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -301,8 +301,8 @@ popd
 %exclude %{python3_sitearch}/matplotlib/backends/_tkagg.*
 
 %files -n python3-matplotlib-qt4
-%{python_sitearch}/matplotlib/backends/backend_qt4.*
-%{python_sitearch}/matplotlib/backends/backend_qt4agg.*
+%{python3_sitearch}/matplotlib/backends/backend_qt4.*
+%{python3_sitearch}/matplotlib/backends/backend_qt4agg.*
 
 %files -n python3-matplotlib-tk
 %{python3_sitearch}/matplotlib/backends/backend_tkagg.py*
@@ -311,6 +311,10 @@ popd
 %endif
 
 %changelog
+* Wed Mar 27 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.2.0-13
+- use python3 version in python3-matplotlib-qt4 (#915727)
+- delete installed dateutil and pytz
+
 * Wed Apr  3 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.2.0-12
 - Decode output of subprocess to utf-8 or regex will fail (#928326)
 
