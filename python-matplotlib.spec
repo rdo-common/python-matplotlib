@@ -294,26 +294,34 @@ popd
 %{python3_sitearch}/pylab.py*
 %{python3_sitearch}/__pycache__/*
 %exclude %{python3_sitearch}/matplotlib/backends/backend_qt4.*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4.*
 %exclude %{python3_sitearch}/matplotlib/backends/backend_qt4agg.*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4agg.*
 %exclude %{python3_sitearch}/matplotlib/backends/backend_tkagg.*
-%exclude %{python3_sitearch}/matplotlib/backends/backend_tkagg.*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/tkagg.*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/_tkagg.*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/_tkagg.*
 
 %files -n python3-matplotlib-qt4
 %{python3_sitearch}/matplotlib/backends/backend_qt4.*
+%{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4.*
 %{python3_sitearch}/matplotlib/backends/backend_qt4agg.*
+%{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4agg.*
 
 %files -n python3-matplotlib-tk
 %{python3_sitearch}/matplotlib/backends/backend_tkagg.py*
+%{python3_sitearch}/matplotlib/backends/__pycache__/backend_tkagg.*
 %{python3_sitearch}/matplotlib/backends/tkagg.*
+%{python3_sitearch}/matplotlib/backends/__pycache__/tkagg.*
 %{python3_sitearch}/matplotlib/backends/_tkagg.*
 %endif
 
 %changelog
-* Wed Mar 27 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.2.0-13
+* Wed Apr 10 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.2.0-13
 - use python3 version in python3-matplotlib-qt4 (#915727)
-- delete installed dateutil and pytz
+- include __pycache__ files in correct subpackages on python3
 
 * Wed Apr  3 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.2.0-12
 - Decode output of subprocess to utf-8 or regex will fail (#928326)
