@@ -17,7 +17,7 @@
 
 Name:           python-matplotlib
 Version:        1.2.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 License:        Python
@@ -319,6 +319,9 @@ popd
 %endif
 
 %changelog
+* Mon Jun 10 2013 Jon Ciesla <limburgher@gmail.com> - 1.2.0-14
+- agg rebuild.
+
 * Wed Apr 10 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.2.0-13
 - use python3 version in python3-matplotlib-qt4 (#915727)
 - include __pycache__ files in correct subpackages on python3
