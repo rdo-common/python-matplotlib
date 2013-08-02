@@ -1,73 +1,26 @@
-diff -up matplotlib-1.2.0/setupext.py.orig matplotlib-1.2.0/setupext.py
---- matplotlib-1.2.0/setupext.py.orig	2012-11-23 14:49:21.295712608 -0200
-+++ matplotlib-1.2.0/setupext.py	2012-11-23 14:49:31.508712999 -0200
-@@ -96,7 +96,6 @@ BUILT_GDK       = False
- BUILT_PATH      = False
- BUILT_TRI       = False
+--- setupext.py.orig	2013-08-02 09:39:43.914247832 +0200
++++ setupext.py	2013-08-02 09:40:14.785304342 +0200
+@@ -749,22 +749,7 @@
+             return str(e) + ' Using local copy.'
  
--AGG_VERSION = 'agg24'
- TCL_TK_CACHE = None
+     def add_flags(self, ext):
+-        if self.found_external:
+-            pkg_config.setup_extension(ext, 'libagg')
+-        else:
+-            ext.include_dirs.append('agg24/include')
+-            agg_sources = [
+-                'agg_bezier_arc.cpp',
+-                'agg_curves.cpp',
+-                'agg_image_filters.cpp',
+-                'agg_trans_affine.cpp',
+-                'agg_vcgen_contour.cpp',
+-                'agg_vcgen_dash.cpp',
+-                'agg_vcgen_stroke.cpp',
+-                'agg_vpgen_segmentator.cpp'
+-                ]
+-            ext.sources.extend(
+-                os.path.join('agg24', 'src', x) for x in agg_sources)
++        pkg_config.setup_extension(ext, 'libagg', default_include_dirs=["/usr/include/agg2"])
  
- # for nonstandard installation/build with --prefix variable
-@@ -621,7 +620,8 @@ def add_agg_flags(module):
-     # before adding the freetype flags since -z comes later
-     add_base_flags(module)
-     add_numpy_flags(module)
--    module.include_dirs.extend(['src', '%s/include'%AGG_VERSION, '.'])
-+    module.include_dirs.extend(['src', '/usr/include/agg2', '.'])
-+    module.libraries.append('agg')
  
-     # put these later for correct link order
-     module.libraries.extend(std_libs)
-@@ -1220,17 +1220,7 @@ def build_agg(ext_modules, packages):
-     global BUILT_AGG
-     if BUILT_AGG: return # only build it if you you haven't already
- 
--    agg = (
--           'agg_trans_affine.cpp',
--           'agg_bezier_arc.cpp',
--           'agg_curves.cpp',
--           'agg_vcgen_dash.cpp',
--           'agg_vcgen_stroke.cpp',
--           'agg_image_filters.cpp',
--           )
--
--    deps = ['%s/src/%s'%(AGG_VERSION, name) for name in agg]
--    deps.extend(['src/mplutils.cpp', 'src/agg_py_transforms.cpp'])
-+    deps = ['src/mplutils.cpp', 'src/agg_py_transforms.cpp']
-     deps.extend(glob.glob('CXX/*.cxx'))
-     deps.extend(glob.glob('CXX/*.c'))
-     temp_copy('src/_backend_agg.cpp', 'src/backend_agg.cpp')
-@@ -1253,16 +1243,7 @@ def build_path(ext_modules, packages):
-     global BUILT_PATH
-     if BUILT_PATH: return # only build it if you you haven't already
- 
--    agg = (
--           'agg_vcgen_contour.cpp',
--           'agg_curves.cpp',
--           'agg_bezier_arc.cpp',
--           'agg_trans_affine.cpp',
--           'agg_vcgen_stroke.cpp',
--           )
--
--    deps = ['%s/src/%s'%(AGG_VERSION, name) for name in agg]
--    deps.extend(glob.glob('CXX/*.cxx'))
-+    deps = glob.glob('CXX/*.cxx')
-     deps.extend(glob.glob('CXX/*.c'))
- 
-     temp_copy('src/_path.cpp', 'src/path.cpp')
-@@ -1287,14 +1268,8 @@ def build_image(ext_modules, packages):
-     global BUILT_IMAGE
-     if BUILT_IMAGE: return # only build it if you you haven't already
- 
--    agg = ('agg_trans_affine.cpp',
--           'agg_image_filters.cpp',
--           'agg_bezier_arc.cpp',
--           )
--
-     temp_copy('src/_image.cpp', 'src/image.cpp')
-     deps = ['src/image.cpp', 'src/mplutils.cpp']
--    deps.extend(['%s/src/%s'%(AGG_VERSION,name) for name in agg])
-     deps.extend(glob.glob('CXX/*.cxx'))
-     deps.extend(glob.glob('CXX/*.c'))
- 
+ class FreeType(SetupPackage):

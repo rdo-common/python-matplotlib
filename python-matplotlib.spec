@@ -16,24 +16,21 @@
 
 
 Name:           python-matplotlib
-Version:        1.2.0
-Release:        15%{?dist}
+Version:        1.3.0
+Release:        1%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
-License:        Python
+# qt4_editor backend is MIT
+License:        Python and MIT
 URL:            http://matplotlib.org
 #Modified Sources to remove the one undistributable file
 #See generate-tarball.sh in fedora cvs repository for logic
 #sha1sum matplotlib-1.2.0-without-gpc.tar.gz
 #92ada4ef4e7374d67e46e30bfb08c3fed068d680  matplotlib-1.2.0-without-gpc.tar.gz
-Source0:        matplotlib-%{version}-without-gpc.tar.gz
+Source0:        matplotlib-%{version}-without-gpc.tar.xz
 
 Patch0:         %{name}-noagg.patch
-Patch1:         %{name}-tk.patch
-# http://sourceforge.net/mailarchive/message.php?msg_id=30202451
-# https://github.com/matplotlib/matplotlib/pull/1666
-# https://bugzilla.redhat.com/show_bug.cgi?id=896182
-Patch2:         %{name}-fontconfig.patch
+Patch1:         %{name}-system-cxx.patch
 
 BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
@@ -43,7 +40,9 @@ BuildRequires:  numpy
 BuildRequires:  pycairo-devel
 BuildRequires:  pygtk2-devel
 BuildRequires:  pyparsing
+BuildRequires:  python-pycxx-devel
 BuildRequires:  python-dateutil
+BuildRequires:  python-setuptools
 BuildRequires:  python2-devel
 BuildRequires:  pytz
 BuildRequires:  xorg-x11-server-Xvfb
@@ -127,8 +126,10 @@ Group:          Development/Libraries
 BuildRequires:  python3-cairo
 BuildRequires:  python3-dateutil
 BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
 BuildRequires:  python3-gobject
 BuildRequires:  python3-numpy
+BuildRequires:  python3-pycxx-devel
 BuildRequires:  python3-pyparsing
 BuildRequires:  python3-pytz
 BuildRequires:  python3-six
@@ -157,7 +158,7 @@ errorcharts, scatterplots, etc, with just a few lines of code.
 %package -n     python3-matplotlib-qt4
 Summary:        Qt4 backend for python3-matplotlib
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
 BuildRequires:  python3-PyQt4-devel
 Requires:       python3-PyQt4
 
@@ -179,18 +180,11 @@ Requires:       python3-tkinter
 %setup -q -n matplotlib-%{version}
 
 # Remove bundled libraries
-rm -r agg24 lib/matplotlib/pyparsing_py?.py
+rm -r agg24 CXX
 
 # Remove references to bundled libraries
-%patch0 -p1 -b .noagg
-sed -i -e s/matplotlib\.pyparsing_py./pyparsing/g lib/matplotlib/*.py
-
-# Correct tcl/tk detection
-%patch1 -p1 -b .tk
-sed -i -e 's|@@libdir@@|%{_libdir}|' setupext.py
-
-# Use fontconfig by default
-%patch2 -p1 -b .fontconfig
+%patch0 -b .noagg
+%patch1 -p1 -b .cxx
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
@@ -235,16 +229,14 @@ popd
 %endif
 
 %files
-%doc README.txt
-%doc lib/dateutil_py2/LICENSE
-%doc lib/matplotlib/mpl-data/fonts/ttf/LICENSE_STIX
-%doc lib/pytz/LICENSE.txt
+%doc README.rst
+%doc LICENSE/
 %doc CHANGELOG
-%doc CXX
 %doc INSTALL
 %doc PKG-INFO
 %doc TODO
 %{python_sitearch}/*egg-info
+%{python_sitearch}/matplotlib-*-nspkg.pth
 %{python_sitearch}/matplotlib/
 %{python_sitearch}/mpl_toolkits/
 %{python_sitearch}/pylab.py*
@@ -279,16 +271,14 @@ popd
 
 %if %{with_python3}
 %files -n python3-matplotlib
-%doc %{basepy3dir}/README.txt
-%doc %{basepy3dir}/lib/dateutil_py3/LICENSE
-%doc %{basepy3dir}/lib/matplotlib/mpl-data/fonts/ttf/LICENSE_STIX
-%doc %{basepy3dir}/lib/pytz/LICENSE.txt
+%doc %{basepy3dir}/README.rst
+%doc %{basepy3dir}/LICENSE/
 %doc %{basepy3dir}/CHANGELOG
-%doc %{basepy3dir}/CXX
 %doc %{basepy3dir}/INSTALL
 %doc %{basepy3dir}/PKG-INFO
 %doc %{basepy3dir}/TODO
 %{python3_sitearch}/*egg-info
+%{python3_sitearch}/matplotlib-*-nspkg.pth
 %{python3_sitearch}/matplotlib/
 %{python3_sitearch}/mpl_toolkits/
 %{python3_sitearch}/pylab.py*
@@ -319,6 +309,15 @@ popd
 %endif
 
 %changelog
+* Fri Aug  2 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.3.0-1
+- update to new version
+- use xz to compress sources
+- drop fontconfig patch (upstream)
+- drop tk patch (upstream solved build issue differently)
+- redo use system agg patch
+- delete bundled python-pycxx headers
+- fix requires of python3-matplotlib-qt (fixes #988412)
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.0-15
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
