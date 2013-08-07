@@ -309,7 +309,7 @@ popd
 %endif
 
 %changelog
-* Fri Aug  7 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.3.0-1
+* Wed Aug  7 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.3.0-1
 - update to new version
 - use xz to compress sources
 - drop fontconfig patch (upstream)
