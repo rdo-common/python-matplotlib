@@ -43,6 +43,9 @@ BuildRequires:  pyparsing
 BuildRequires:  python-pycxx-devel
 BuildRequires:  python-dateutil
 BuildRequires:  python-setuptools
+%if %{with_html}
+BuildRequires:  python-numpydoc
+%endif
 BuildRequires:  python2-devel
 BuildRequires:  pytz
 BuildRequires:  xorg-x11-server-Xvfb
