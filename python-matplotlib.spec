@@ -6,6 +6,7 @@
 %endif
 %global __provides_exclude_from	.*/site-packages/.*\\.so$
 %global with_html               1
+%global run_tests               0
 
 # On RHEL 7 onwards, don't build with wx:
 %if 0%{?rhel} >= 7
@@ -16,7 +17,7 @@
 
 
 Name:           python-matplotlib
-Version:        1.3.0
+Version:        1.3.1
 Release:        1%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
@@ -28,6 +29,7 @@ URL:            http://matplotlib.org
 #sha1sum matplotlib-1.2.0-without-gpc.tar.gz
 #92ada4ef4e7374d67e46e30bfb08c3fed068d680  matplotlib-1.2.0-without-gpc.tar.gz
 Source0:        matplotlib-%{version}-without-gpc.tar.xz
+Source1:        setup.cfg
 
 Patch0:         %{name}-noagg.patch
 Patch1:         %{name}-system-cxx.patch
@@ -182,12 +184,18 @@ Requires:       python3-tkinter
 %prep
 %setup -q -n matplotlib-%{version}
 
+# Copy setup.cfg to the builddir
+cp %{SOURCE1} .
+
+# Use fontconfig by default
+sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
+
 # Remove bundled libraries
 rm -r agg24 CXX
 
 # Remove references to bundled libraries
 %patch0 -b .noagg
-%patch1 -p1 -b .cxx
+%patch1 -b .cxx
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
@@ -230,6 +238,17 @@ pushd %{py3dir}
     rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
 popd
 %endif
+
+%if %{run_tests}
+%check
+PYTHON_PATH=$RPM_BUILD_ROOT%{python_sitearch} \
+    %{__python} -c "import matplotlib; matplotlib.test()"
+
+%if %{with_python3}
+PYTHON_PATH=$RPM_BUILD_ROOT%{python3_sitearch} \
+    %{__python3} -c "import matplotlib; matplotlib.test()"
+%endif
+%endif # run_tests
 
 %files
 %doc README.rst
@@ -312,6 +331,12 @@ popd
 %endif
 
 %changelog
+* Sat Jan 25 2014 Thomas Spura <tomspur@fedoraproject.org> - 1.3.1-1
+- update to 1.3.1
+- use GTKAgg as backend (#1030396, #982793, #1049624)
+- use fontconfig
+- add %%check for local testing (testing requires a display)
+
 * Wed Aug  7 2013 Thomas Spura <tomspur@fedoraproject.org> - 1.3.0-1
 - update to new version
 - use xz to compress sources
