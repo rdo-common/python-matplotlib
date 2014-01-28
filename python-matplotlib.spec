@@ -6,7 +6,7 @@
 %endif
 %global __provides_exclude_from	.*/site-packages/.*\\.so$
 %global with_html               1
-%global run_tests               1
+%global run_tests               0
 
 # On RHEL 7 onwards, don't build with wx:
 %if 0%{?rhel} >= 7
