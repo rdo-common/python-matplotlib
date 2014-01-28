@@ -6,7 +6,7 @@
 %endif
 %global __provides_exclude_from	.*/site-packages/.*\\.so$
 %global with_html               1
-%global run_tests               0
+%global run_tests               1
 
 # On RHEL 7 onwards, don't build with wx:
 %if 0%{?rhel} >= 7
@@ -15,10 +15,12 @@
 %global with_wx 1
 %endif
 
+# https://fedorahosted.org/fpc/ticket/381
+%global with_bundled_fonts      1
 
 Name:           python-matplotlib
 Version:        1.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -33,6 +35,11 @@ Source1:        setup.cfg
 
 Patch0:         %{name}-noagg.patch
 Patch1:         %{name}-system-cxx.patch
+Patch2:         20_matplotlibrc_path_search_fix.patch
+Patch3:         40_bts608939_draw_markers_description.patch
+Patch4:         50_bts608942_spaces_in_param_args.patch
+Patch5:         60_deal_with_no_writable_dirs.patch
+Patch6:         70_bts720549_try_StayPuft_for_xkcd.patch
 
 BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
@@ -47,6 +54,12 @@ BuildRequires:  python-dateutil
 BuildRequires:  python-setuptools
 %if %{with_html}
 BuildRequires:  python-numpydoc
+%endif
+%if %{run_tests}
+BuildRequires:  python-nose
+%if %{with_python3}
+BuildRequires:  python3-nose
+%endif
 %endif
 BuildRequires:  python2-devel
 BuildRequires:  pytz
@@ -65,6 +78,7 @@ Requires:	stix-math-fonts
 %else
 Requires:	stix-fonts
 %endif
+Requires:       %{name}-data = %{version}-%{release}
 
 %description
 Matplotlib is a python 2D plotting library which produces publication
@@ -124,6 +138,27 @@ BuildRequires:  dvipng
 %description    doc
 %{summary}
 
+%package        data
+Summary:        Data used by python-matplotlib
+Requires:       %{name} = %{version}-%{release}
+%if %{with_bundled_fonts}
+Requires:       %{name}-data-fonts = %{version}-%{release}
+%endif
+BuildArch:      noarch
+
+%description    data
+%{summary}
+
+%if %{with_bundled_fonts}
+%package        data-fonts
+Summary:        Fonts used by python-matplotlib
+Requires:       %{name}-data = %{version}-%{release}
+BuildArch:      noarch
+
+%description    data-fonts
+%{summary}
+%endif
+
 %if %{with_python3}
 %package -n     python3-matplotlib
 Summary:        Python 2D plotting library
@@ -148,6 +183,7 @@ Requires:	stix-math-fonts
 %else
 Requires:	stix-fonts
 %endif
+Requires:       %{name}-data = %{version}-%{release}
 
 %description -n python3-matplotlib
 Matplotlib is a python 2D plotting library which produces publication
@@ -187,8 +223,18 @@ Requires:       python3-tkinter
 # Copy setup.cfg to the builddir
 cp %{SOURCE1} .
 
+# Keep this until next version, and increment if changing from
+# USE_FONTCONFIG to False or True so that cache is regenerated
+# if updated from a version enabling fontconfig to one not
+# enabling it, or vice versa
+if [ %{version} = 1.3.1 ]; then
+    sed -i 's/\(__version__ = 101\)/\1.1/' lib/matplotlib/font_manager.py
+fi
+
+%if !%{with_bundled_fonts}
 # Use fontconfig by default
 sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
+%endif
 
 # Remove bundled libraries
 rm -r agg24 CXX
@@ -196,6 +242,11 @@ rm -r agg24 CXX
 # Remove references to bundled libraries
 %patch0 -b .noagg
 %patch1 -b .cxx
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
@@ -205,12 +256,16 @@ cp -a . %{py3dir}
 %endif
 
 %build
-xvfb-run %{__python2} setup.py build
+MPLCONFIGDIR=$PWD \
+MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data \
+  xvfb-run %{__python2} setup.py build
 %if %{with_html}
 # Need to make built matplotlib libs available for the sphinx extensions:
 pushd doc
-    export PYTHONPATH=`realpath ../build/lib.linux*`
-    %{__python2} make.py html
+    MPLCONFIGDIR=$PWD/.. \
+    MATPLOTLIBDATA=$PWD/../lib/matplotlib/mpl-data \
+    PYTHONPATH=`realpath ../build/lib.linux*` \
+        %{__python2} make.py html
 popd
 %endif
 # Ensure all example files are non-executable so that the -doc
@@ -219,34 +274,53 @@ find examples -name '*.py' -exec chmod a-x '{}' \;
 
 %if %{with_python3}
 pushd %{py3dir}
-    xvfb-run %{__python3} setup.py build
+    MPLCONFIGDIR=$PWD \
+    MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data \
+      xvfb-run %{__python3} setup.py build
     # documentation cannot be built with python3 due to syntax errors
     # and building with python 2 exits with cryptic error messages
 popd
 %endif
 
 %install
-%{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+MPLCONFIGDIR=$PWD \
+MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data/ \
+  %{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
 chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
-rm -rf $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data/fonts
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir} $RPM_BUILD_ROOT%{_datadir}/matplotlib
+mv $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data/matplotlibrc \
+   $RPM_BUILD_ROOT%{_sysconfdir}
+mv $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data \
+   $RPM_BUILD_ROOT%{_datadir}/matplotlib
+%if !%{with_bundled_fonts}
+rm -rf $RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data/fonts
+%endif
 
 %if %{with_python3}
 pushd %{py3dir}
-    %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+    MPLCONFIGDIR=$PWD/.. \
+    MATPLOTLIBDATA=$PWD/../lib/matplotlib/mpl-data/ \
+        %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
     chmod +x $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/dates.py
-    rm -rf $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data/fonts
+    rm -fr $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data
     rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
 popd
 %endif
 
 %if %{run_tests}
 %check
-PYTHON_PATH=$RPM_BUILD_ROOT%{python_sitearch} \
-    %{__python} -c "import matplotlib; matplotlib.test()"
+# This should match the default backend
+echo "backend      : GTKAgg" > matplotlibrc
+MPLCONFIGDIR=$PWD \
+MATPLOTLIBDATA=$RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data \
+PYTHONPATH=$RPM_BUILD_ROOT%{python_sitearch} \
+     xvfb-run %{__python} -c "import matplotlib; matplotlib.test()"
 
 %if %{with_python3}
-PYTHON_PATH=$RPM_BUILD_ROOT%{python3_sitearch} \
-    %{__python3} -c "import matplotlib; matplotlib.test()"
+MPLCONFIGDIR=$PWD \
+MATPLOTLIBDATA=$RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data \
+PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
+     xvfb-run %{__python3} -c "import matplotlib; matplotlib.test()"
 %endif
 %endif # run_tests
 
@@ -291,6 +365,18 @@ PYTHON_PATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %doc doc/build/html/*
 %endif
 
+%files data
+%{_sysconfdir}/matplotlibrc
+%{_datadir}/matplotlib/mpl-data/
+%if %{with_bundled_fonts}
+%exclude %{_datadir}/matplotlib/mpl-data/fonts/
+%endif
+
+%if %{with_bundled_fonts}
+%files data-fonts
+%{_datadir}/matplotlib/mpl-data/fonts/
+%endif
+
 %if %{with_python3}
 %files -n python3-matplotlib
 %doc %{basepy3dir}/README.rst
@@ -331,6 +417,12 @@ PYTHON_PATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %endif
 
 %changelog
+* Mon Jan 27 2014 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.3.1-2
+- Correct environment for and enable %%check
+- Install system wide matplotlibrc under /etc
+- Do not duplicate mpl-data for python2 and python3 packages
+- Conditionally bundle data fonts (https://fedorahosted.org/fpc/ticket/381)
+
 * Sat Jan 25 2014 Thomas Spura <tomspur@fedoraproject.org> - 1.3.1-1
 - update to 1.3.1
 - use GTKAgg as backend (#1030396, #982793, #1049624)
