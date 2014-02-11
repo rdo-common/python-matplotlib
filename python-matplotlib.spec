@@ -15,12 +15,16 @@
 %global with_wx 1
 %endif
 
+# the default backend; one of GTK GTKAgg GTKCairo GTK3Agg GTK3Cairo
+# CocoaAgg MacOSX Qt4Agg TkAgg WX WXAgg Agg Cairo GDK PS PDF SVG
+%global backend                 TkAgg
+
 # https://fedorahosted.org/fpc/ticket/381
 %global with_bundled_fonts      1
 
 Name:           python-matplotlib
 Version:        1.3.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -79,6 +83,15 @@ Requires:	stix-math-fonts
 Requires:	stix-fonts
 %endif
 Requires:       %{name}-data = %{version}-%{release}
+
+# GTKAgg does not require extra subpackages, but does not work with python3
+%if "%{backend}" == "TkAgg"
+Requires:       %{name}-tk%{?_isa} = %{version}-%{release}
+%else
+%  if "%{backend}" == "Qt4Agg"
+Requires:       %{name}-qt4%{?_isa} = %{version}-%{release}
+%  endif
+%endif
 
 %description
 Matplotlib is a python 2D plotting library which produces publication
@@ -140,7 +153,6 @@ BuildRequires:  dvipng
 
 %package        data
 Summary:        Data used by python-matplotlib
-Requires:       %{name} = %{version}-%{release}
 %if %{with_bundled_fonts}
 Requires:       %{name}-data-fonts = %{version}-%{release}
 %endif
@@ -184,6 +196,13 @@ Requires:	stix-math-fonts
 Requires:	stix-fonts
 %endif
 Requires:       %{name}-data = %{version}-%{release}
+%if "%{backend}" == "TkAgg"
+Requires:       python3-matplotlib-tk%{?_isa} = %{version}-%{release}
+%else
+%  if "%{backend}" == "Qt4Agg"
+Requires:       python3-matplotlib-qt4%{?_isa} = %{version}-%{release}
+%  endif
+%endif
 
 %description -n python3-matplotlib
 Matplotlib is a python 2D plotting library which produces publication
@@ -222,6 +241,7 @@ Requires:       python3-tkinter
 
 # Copy setup.cfg to the builddir
 cp %{SOURCE1} .
+sed -i 's/\(backend = \).*/\1%{backend}/' setup.cfg
 
 # Keep this until next version, and increment if changing from
 # USE_FONTCONFIG to False or True so that cache is regenerated
@@ -310,7 +330,7 @@ popd
 %if %{run_tests}
 %check
 # This should match the default backend
-echo "backend      : GTKAgg" > matplotlibrc
+echo "backend      : %{backend}" > matplotlibrc
 MPLCONFIGDIR=$PWD \
 MATPLOTLIBDATA=$RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data \
 PYTHONPATH=$RPM_BUILD_ROOT%{python_sitearch} \
@@ -417,6 +437,10 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Feb 11 2014 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.3.1-3
+- Make TkAgg the default backend
+- Remove python2 dependency from -data subpackage
+
 * Mon Jan 27 2014 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 1.3.1-2
 - Correct environment for and enable %%check
 - Install system wide matplotlibrc under /etc
