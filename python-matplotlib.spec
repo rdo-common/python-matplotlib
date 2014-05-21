@@ -24,7 +24,7 @@
 
 Name:           python-matplotlib
 Version:        1.3.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -437,6 +437,9 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %endif
 
 %changelog
+* Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 1.3.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
+
 * Wed May 14 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.3.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Changes/Python_3.4
 
