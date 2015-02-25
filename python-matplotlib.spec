@@ -63,6 +63,7 @@ BuildRequires:  python-dateutil
 BuildRequires:  python-setuptools
 %if %{with_html}
 BuildRequires:  python-numpydoc
+BuildRequires:  python-scikit-image
 %endif
 %if %{run_tests}
 BuildRequires:  python-nose
@@ -169,7 +170,9 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %if %{with_html}
 BuildRequires:  python-sphinx
 BuildRequires:  tex(latex)
+BuildRequires:  tex-preview
 BuildRequires:  dvipng
+BuildRequires:  graphviz
 %endif
 
 %description    doc
