@@ -15,26 +15,30 @@
 %global with_wx 1
 %endif
 
+# On Fedora 21 onwards, enable Qt5 backend:
+%if 0%{?fedora} >= 21
+%global with_qt5 1
+%else
+%global with_qt5 0
+%endif
+
 # the default backend; one of GTK GTKAgg GTKCairo GTK3Agg GTK3Cairo
-# CocoaAgg MacOSX Qt4Agg TkAgg WX WXAgg Agg Cairo GDK PS PDF SVG
+# CocoaAgg MacOSX Qt4Agg Qt5Agg TkAgg WX WXAgg Agg Cairo GDK PS PDF SVG
 %global backend                 TkAgg
 
 # https://fedorahosted.org/fpc/ticket/381
 %global with_bundled_fonts      1
 
 Name:           python-matplotlib
-Version:        1.3.1
-Release:        7%{?dist}
+Version:        1.4.3
+Release:        2%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
 License:        Python and MIT
 URL:            http://matplotlib.org
-#Modified Sources to remove the one undistributable file
-#See generate-tarball.sh in fedora cvs repository for logic
-#sha1sum matplotlib-1.2.0-without-gpc.tar.gz
-#92ada4ef4e7374d67e46e30bfb08c3fed068d680  matplotlib-1.2.0-without-gpc.tar.gz
-Source0:        matplotlib-%{version}-without-gpc.tar.xz
+#Modified Sources to remove the bundled libraries
+Source0:        matplotlib-%{version}-without-extern.tar.xz
 Source1:        setup.cfg
 
 Patch0:         %{name}-noagg.patch
@@ -42,13 +46,14 @@ Patch1:         %{name}-system-cxx.patch
 Patch2:         20_matplotlibrc_path_search_fix.patch
 Patch3:         40_bts608939_draw_markers_description.patch
 Patch4:         50_bts608942_spaces_in_param_args.patch
-Patch5:         60_deal_with_no_writable_dirs.patch
-Patch6:         70_bts720549_try_StayPuft_for_xkcd.patch
+Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
 
 BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
 BuildRequires:  gtk2-devel
 BuildRequires:  libpng-devel
+BuildRequires:  qhull-devel
+BuildRequires:  python-six
 BuildRequires:  numpy
 BuildRequires:  pycairo-devel
 BuildRequires:  pygtk2-devel
@@ -71,6 +76,7 @@ BuildRequires:  xorg-x11-server-Xvfb
 BuildRequires:  zlib-devel
 Requires:       dejavu-sans-fonts
 Requires:       dvipng
+Requires:       python-six
 Requires:       numpy
 Requires:       pycairo
 Requires:       pygtk2
@@ -90,6 +96,12 @@ Requires:       %{name}-tk%{?_isa} = %{version}-%{release}
 %else
 %  if "%{backend}" == "Qt4Agg"
 Requires:       %{name}-qt4%{?_isa} = %{version}-%{release}
+%  else
+%    if %{with_qt5}
+%      if "%{backend}" == "Qt5Agg"
+Requires:       %{name}-qt5%{?_isa} = %{version}-%{release}
+%      endif
+%    endif
 %  endif
 %endif
 
@@ -113,6 +125,18 @@ Requires:       PyQt4
 
 %description    qt4
 %{summary}
+
+%if %{with_qt5}
+%package        qt5
+Summary:        Qt5 backend for python-matplotlib
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+BuildRequires:  python-qt5
+Requires:       python-qt5
+
+%description    qt5
+%{summary}
+%endif # with_qt5
 
 %package        tk
 Summary:        Tk backend for python-matplotlib
@@ -185,6 +209,7 @@ BuildRequires:  python3-pycxx-devel
 BuildRequires:  python3-pyparsing
 BuildRequires:  python3-pytz
 BuildRequires:  python3-six
+Requires:       python3-six
 Requires:       python3-numpy
 Requires:       python3-cairo
 Requires:       python3-pyparsing
@@ -201,6 +226,12 @@ Requires:       python3-matplotlib-tk%{?_isa} = %{version}-%{release}
 %else
 %  if "%{backend}" == "Qt4Agg"
 Requires:       python3-matplotlib-qt4%{?_isa} = %{version}-%{release}
+%  else
+%    if %{with_qt5}
+%      if "%{backend}" == "Qt5Agg"
+Requires:       python3-matplotlib-qt5%{?_isa} = %{version}-%{release}
+%      endif
+%    endif
 %  endif
 %endif
 
@@ -225,6 +256,18 @@ Requires:       python3-PyQt4
 %description -n python3-matplotlib-qt4
 %{summary}
 
+%if %{with_qt5}
+%package -n     python3-matplotlib-qt5
+Summary:        Qt5 backend for python3-matplotlib
+Group:          Development/Libraries
+Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
+BuildRequires:  python3-qt5
+Requires:       python3-qt5
+
+%description -n python3-matplotlib-qt5
+%{summary}
+%endif # with_qt5
+
 %package -n     python3-matplotlib-tk
 Summary:        Tk backend for python3-matplotlib
 Group:          Development/Libraries
@@ -247,7 +290,7 @@ sed -i 's/\(backend = \).*/\1%{backend}/' setup.cfg
 # USE_FONTCONFIG to False or True so that cache is regenerated
 # if updated from a version enabling fontconfig to one not
 # enabling it, or vice versa
-if [ %{version} = 1.3.1 ]; then
+if [ %{version} = 1.4.3 ]; then
     sed -i 's/\(__version__ = 101\)/\1.1/' lib/matplotlib/font_manager.py
 fi
 
@@ -256,9 +299,6 @@ fi
 sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %endif
 
-# Remove bundled libraries
-rm -r agg24 CXX
-
 # Remove references to bundled libraries
 %patch0 -b .noagg
 %patch1 -b .cxx
@@ -266,7 +306,6 @@ rm -r agg24 CXX
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
@@ -350,7 +389,6 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %doc CHANGELOG
 %doc INSTALL
 %doc PKG-INFO
-%doc TODO
 %{python_sitearch}/*egg-info
 %{python_sitearch}/matplotlib-*-nspkg.pth
 %{python_sitearch}/matplotlib/
@@ -358,6 +396,8 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %{python_sitearch}/pylab.py*
 %exclude %{python_sitearch}/matplotlib/backends/backend_qt4.*
 %exclude %{python_sitearch}/matplotlib/backends/backend_qt4agg.*
+%exclude %{python_sitearch}/matplotlib/backends/backend_qt5.*
+%exclude %{python_sitearch}/matplotlib/backends/backend_qt5agg.*
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
@@ -367,6 +407,12 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %files qt4
 %{python_sitearch}/matplotlib/backends/backend_qt4.*
 %{python_sitearch}/matplotlib/backends/backend_qt4agg.*
+
+%if %{with_qt5}
+%files qt5
+%{python_sitearch}/matplotlib/backends/backend_qt5.*
+%{python_sitearch}/matplotlib/backends/backend_qt5agg.*
+%endif # with_qt5
 
 %files tk
 %{python_sitearch}/matplotlib/backends/backend_tkagg.py*
@@ -404,7 +450,6 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %doc %{basepy3dir}/CHANGELOG
 %doc %{basepy3dir}/INSTALL
 %doc %{basepy3dir}/PKG-INFO
-%doc %{basepy3dir}/TODO
 %{python3_sitearch}/*egg-info
 %{python3_sitearch}/matplotlib-*-nspkg.pth
 %{python3_sitearch}/matplotlib/
@@ -415,18 +460,29 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4.*
 %exclude %{python3_sitearch}/matplotlib/backends/backend_qt4agg.*
 %exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4agg.*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_qt5.*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5.*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_qt5agg.*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5agg.*
 %exclude %{python3_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/__pycache__/tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/_tkagg.*
-%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/_tkagg.*
 
 %files -n python3-matplotlib-qt4
 %{python3_sitearch}/matplotlib/backends/backend_qt4.*
 %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4.*
 %{python3_sitearch}/matplotlib/backends/backend_qt4agg.*
 %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4agg.*
+
+%if %{with_qt5}
+%files -n python3-matplotlib-qt5
+%{python3_sitearch}/matplotlib/backends/backend_qt5.*
+%{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5.*
+%{python3_sitearch}/matplotlib/backends/backend_qt5agg.*
+%{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5agg.*
+%endif # with_qt5
 
 %files -n python3-matplotlib-tk
 %{python3_sitearch}/matplotlib/backends/backend_tkagg.py*
@@ -437,6 +493,18 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Feb 17 2015 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1.4.3-2
+- Disable Qt5 backend on Fedora <21 and RHEL
+
+* Tue Feb 17 2015 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1.4.3-1
+- New upstream release
+- Add Qt5 backend
+
+* Tue Jan 13 2015 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1.4.2-1
+- Bump to new upstream release
+- Add qhull-devel to BR
+- Add six to Requires
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 

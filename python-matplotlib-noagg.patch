@@ -1,13 +1,20 @@
 --- setupext.py.orig	2013-08-02 09:39:43.914247832 +0200
 +++ setupext.py	2013-08-02 09:40:14.785304342 +0200
-@@ -749,22 +749,7 @@
+@@ -914,28 +914,13 @@ class LibAgg(SetupPackage):
+         self.__class__.found_external = True
+         try:
+             return self._check_for_pkg_config(
+-                'libagg', 'agg2/agg_basics.h', min_version='PATCH')
++                'libagg', 'agg2/agg_basics.h', min_version='2.5.0')
+         except CheckFailed as e:
+             self.__class__.found_external = False
              return str(e) + ' Using local copy.'
  
      def add_flags(self, ext):
 -        if self.found_external:
 -            pkg_config.setup_extension(ext, 'libagg')
 -        else:
--            ext.include_dirs.append('agg24/include')
+-            ext.include_dirs.append('extern/agg24/include')
 -            agg_sources = [
 -                'agg_bezier_arc.cpp',
 -                'agg_curves.cpp',
@@ -19,7 +26,7 @@
 -                'agg_vpgen_segmentator.cpp'
 -                ]
 -            ext.sources.extend(
--                os.path.join('agg24', 'src', x) for x in agg_sources)
+-                os.path.join('extern', 'agg24', 'src', x) for x in agg_sources)
 +        pkg_config.setup_extension(ext, 'libagg', default_include_dirs=["/usr/include/agg2"])
  
  
