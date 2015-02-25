@@ -29,9 +29,12 @@
 # https://fedorahosted.org/fpc/ticket/381
 %global with_bundled_fonts      1
 
+# Use the same directory of the main package for subpackage licence and docs
+%global _docdir_fmt %{name}
+
 Name:           python-matplotlib
 Version:        1.4.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -387,10 +390,9 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %endif # run_tests
 
 %files
+%license LICENSE/
 %doc README.rst
-%doc LICENSE/
 %doc CHANGELOG
-%doc INSTALL
 %doc PKG-INFO
 %{python_sitearch}/*egg-info
 %{python_sitearch}/matplotlib-*-nspkg.pth
@@ -406,6 +408,7 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
 %exclude %{python_sitearch}/matplotlib/backends/backend_wx.*
 %exclude %{python_sitearch}/matplotlib/backends/backend_wxagg.*
+%exclude %{_pkgdocdir}/*/
 
 %files qt4
 %{python_sitearch}/matplotlib/backends/backend_qt4.*
@@ -448,10 +451,9 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 
 %if %{with_python3}
 %files -n python3-matplotlib
+%license %{basepy3dir}/LICENSE/
 %doc %{basepy3dir}/README.rst
-%doc %{basepy3dir}/LICENSE/
 %doc %{basepy3dir}/CHANGELOG
-%doc %{basepy3dir}/INSTALL
 %doc %{basepy3dir}/PKG-INFO
 %{python3_sitearch}/*egg-info
 %{python3_sitearch}/matplotlib-*-nspkg.pth
@@ -472,6 +474,7 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %exclude %{python3_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/__pycache__/tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/_tkagg.*
+%exclude %{_pkgdocdir}/*/
 
 %files -n python3-matplotlib-qt4
 %{python3_sitearch}/matplotlib/backends/backend_qt4.*
@@ -496,11 +499,14 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Feb 24 2015 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.4.3-3
+- Use %%license, add skimage to build requirements
+
 * Tue Feb 17 2015 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1.4.3-2
 - Disable Qt5 backend on Fedora <21 and RHEL
 
 * Tue Feb 17 2015 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1.4.3-1
-- New upstream release
+- New upstream release (#1134007)
 - Add Qt5 backend
 
 * Tue Jan 13 2015 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1.4.2-1
