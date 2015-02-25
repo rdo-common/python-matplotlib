@@ -6,14 +6,14 @@ version=$1
 
 dir=matplotlib-${version}
 file=matplotlib-${version}.tar.gz
-result=matplotlib-${version}-without-gpc.tar.xz
+result=matplotlib-${version}-without-extern.tar.xz
 
-wget -vc http://downloads.sourceforge.net/matplotlib/$file
+test -f $file || wget -v http://downloads.sourceforge.net/matplotlib/$file
 
 rm -rf matplotlib-${version}
 tar xzf $file
 
-rm matplotlib-${version}/agg24/include/agg_conv_gpc.h
+rm -r matplotlib-${version}/extern/{agg24,CXX,qhull}
 
 rm -f $result
 tar cJf $result $dir
