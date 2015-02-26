@@ -365,24 +365,24 @@ MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data \
 %install
 MPLCONFIGDIR=$PWD \
 MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data/ \
-  %{__python} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
-chmod +x $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/dates.py
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir} $RPM_BUILD_ROOT%{_datadir}/matplotlib
-mv $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data/matplotlibrc \
-   $RPM_BUILD_ROOT%{_sysconfdir}
-mv $RPM_BUILD_ROOT%{python_sitearch}/matplotlib/mpl-data \
-   $RPM_BUILD_ROOT%{_datadir}/matplotlib
+  %{__python} setup.py install -O1 --skip-build --root=%{buildroot}
+chmod +x %{buildroot}%{python2_sitearch}/matplotlib/dates.py
+mkdir -p %{buildroot}%{_sysconfdir} %{buildroot}%{_datadir}/matplotlib
+mv %{buildroot}%{python2_sitearch}/matplotlib/mpl-data/matplotlibrc \
+   %{buildroot}%{_sysconfdir}
+mv %{buildroot}%{python2_sitearch}/matplotlib/mpl-data \
+   %{buildroot}%{_datadir}/matplotlib
 %if !%{with_bundled_fonts}
-rm -rf $RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data/fonts
+rm -rf %{buildroot}%{_datadir}/matplotlib/mpl-data/fonts
 %endif
 
 %if %{with_python3}
 MPLCONFIGDIR=$PWD/.. \
 MATPLOTLIBDATA=$PWD/../lib/matplotlib/mpl-data/ \
-    %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
-chmod +x $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/dates.py
-rm -fr $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
+    %{__python3} setup.py install -O1 --skip-build --root=%{buildroot}
+chmod +x %{buildroot}%{python3_sitearch}/matplotlib/dates.py
+rm -fr %{buildroot}%{python3_sitearch}/matplotlib/mpl-data
+rm -f %{buildroot}%{python3_sitearch}/six.py
 %endif
 
 %if %{run_tests}
@@ -390,14 +390,14 @@ rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
 # This should match the default backend
 echo "backend      : %{backend}" > matplotlibrc
 MPLCONFIGDIR=$PWD \
-MATPLOTLIBDATA=$RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data \
-PYTHONPATH=$RPM_BUILD_ROOT%{python_sitearch} \
+MATPLOTLIBDATA=%{buildroot}%{_datadir}/matplotlib/mpl-data \
+PYTHONPATH=%{buildroot}%{python2_sitearch} \
      xvfb-run %{__python} -c "import matplotlib; matplotlib.test()"
 
 %if %{with_python3}
 MPLCONFIGDIR=$PWD \
-MATPLOTLIBDATA=$RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data \
-PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
+MATPLOTLIBDATA=%{buildroot}%{_datadir}/matplotlib/mpl-data \
+PYTHONPATH=%{buildroot}%{python3_sitearch} \
      xvfb-run %{__python3} -c "import matplotlib; matplotlib.test()"
 %endif
 %endif # run_tests
@@ -407,50 +407,50 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %doc README.rst
 %doc CHANGELOG
 %doc PKG-INFO
-%{python_sitearch}/*egg-info
-%{python_sitearch}/matplotlib-*-nspkg.pth
-%{python_sitearch}/matplotlib/
-%{python_sitearch}/mpl_toolkits/
-%{python_sitearch}/pylab.py*
-%exclude %{python_sitearch}/matplotlib/backends/backend_qt4*
-%exclude %{python_sitearch}/matplotlib/backends/backend_qt5*
-%exclude %{python_sitearch}/matplotlib/backends/backend_gtk*
-%exclude %{python_sitearch}/matplotlib/backends/_gtkagg.*
-%exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
-%exclude %{python_sitearch}/matplotlib/backends/tkagg.*
-%exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
-%exclude %{python_sitearch}/matplotlib/backends/backend_wx.*
-%exclude %{python_sitearch}/matplotlib/backends/backend_wxagg.*
+%{python2_sitearch}/*egg-info
+%{python2_sitearch}/matplotlib-*-nspkg.pth
+%{python2_sitearch}/matplotlib/
+%{python2_sitearch}/mpl_toolkits/
+%{python2_sitearch}/pylab.py*
+%exclude %{python2_sitearch}/matplotlib/backends/backend_qt4*
+%exclude %{python2_sitearch}/matplotlib/backends/backend_qt5*
+%exclude %{python2_sitearch}/matplotlib/backends/backend_gtk*
+%exclude %{python2_sitearch}/matplotlib/backends/_gtkagg.*
+%exclude %{python2_sitearch}/matplotlib/backends/backend_tkagg.*
+%exclude %{python2_sitearch}/matplotlib/backends/tkagg.*
+%exclude %{python2_sitearch}/matplotlib/backends/_tkagg.so
+%exclude %{python2_sitearch}/matplotlib/backends/backend_wx.*
+%exclude %{python2_sitearch}/matplotlib/backends/backend_wxagg.*
 %exclude %{_pkgdocdir}/*/
 
 %files qt4
-%{python_sitearch}/matplotlib/backends/backend_qt4.*
-%{python_sitearch}/matplotlib/backends/backend_qt4agg.*
+%{python2_sitearch}/matplotlib/backends/backend_qt4.*
+%{python2_sitearch}/matplotlib/backends/backend_qt4agg.*
 
 %if %{with_qt5}
 %files qt5
-%{python_sitearch}/matplotlib/backends/backend_qt5.*
-%{python_sitearch}/matplotlib/backends/backend_qt5agg.*
+%{python2_sitearch}/matplotlib/backends/backend_qt5.*
+%{python2_sitearch}/matplotlib/backends/backend_qt5agg.*
 %endif # with_qt5
 
 %files gtk
-%{python_sitearch}/matplotlib/backends/backend_gtk.py*
-%{python_sitearch}/matplotlib/backends/backend_gtkagg.py*
-%{python_sitearch}/matplotlib/backends/backend_gtkcairo.py*
-%{python_sitearch}/matplotlib/backends/_gtkagg.so
+%{python2_sitearch}/matplotlib/backends/backend_gtk.py*
+%{python2_sitearch}/matplotlib/backends/backend_gtkagg.py*
+%{python2_sitearch}/matplotlib/backends/backend_gtkcairo.py*
+%{python2_sitearch}/matplotlib/backends/_gtkagg.so
 
 %files gtk3
-%{python_sitearch}/matplotlib/backends/backend_gtk3*.py*
+%{python2_sitearch}/matplotlib/backends/backend_gtk3*.py*
 
 %files tk
-%{python_sitearch}/matplotlib/backends/backend_tkagg.py*
-%{python_sitearch}/matplotlib/backends/tkagg.py*
-%{python_sitearch}/matplotlib/backends/_tkagg.so
+%{python2_sitearch}/matplotlib/backends/backend_tkagg.py*
+%{python2_sitearch}/matplotlib/backends/tkagg.py*
+%{python2_sitearch}/matplotlib/backends/_tkagg.so
 
 %if %{with_wx}
 %files wx
-%{python_sitearch}/matplotlib/backends/backend_wx.*
-%{python_sitearch}/matplotlib/backends/backend_wxagg.*
+%{python2_sitearch}/matplotlib/backends/backend_wx.*
+%{python2_sitearch}/matplotlib/backends/backend_wxagg.*
 %endif # with_wx
 
 %files doc
