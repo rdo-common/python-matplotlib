@@ -312,8 +312,7 @@ Requires:       python3-tkinter
 %setup -q -n matplotlib-%{version}
 
 # Copy setup.cfg to the builddir
-cp %{SOURCE1} .
-sed -i 's/\(backend = \).*/\1%{backend}/' setup.cfg
+sed 's/\(backend = \).*/\1%{backend}/' >setup.cfg <%{SOURCE1}
 
 # Keep this until next version, and increment if changing from
 # USE_FONTCONFIG to False or True so that cache is regenerated
@@ -338,11 +337,6 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
-%if %{?with_python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-%endif
-
 %build
 MPLCONFIGDIR=$PWD \
 MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data \
@@ -361,13 +355,11 @@ popd
 find examples -name '*.py' -exec chmod a-x '{}' \;
 
 %if %{with_python3}
-pushd %{py3dir}
-    MPLCONFIGDIR=$PWD \
-    MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data \
-      xvfb-run %{__python3} setup.py build
-    # documentation cannot be built with python3 due to syntax errors
-    # and building with python 2 exits with cryptic error messages
-popd
+MPLCONFIGDIR=$PWD \
+MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data \
+  xvfb-run %{__python3} setup.py build
+# documentation cannot be built with python3 due to syntax errors
+# and building with python 2 exits with cryptic error messages
 %endif
 
 %install
@@ -385,14 +377,12 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/matplotlib/mpl-data/fonts
 %endif
 
 %if %{with_python3}
-pushd %{py3dir}
-    MPLCONFIGDIR=$PWD/.. \
-    MATPLOTLIBDATA=$PWD/../lib/matplotlib/mpl-data/ \
-        %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
-    chmod +x $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/dates.py
-    rm -fr $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data
-    rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
-popd
+MPLCONFIGDIR=$PWD/.. \
+MATPLOTLIBDATA=$PWD/../lib/matplotlib/mpl-data/ \
+    %{__python3} setup.py install -O1 --skip-build --root=$RPM_BUILD_ROOT
+chmod +x $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/dates.py
+rm -fr $RPM_BUILD_ROOT%{python3_sitearch}/matplotlib/mpl-data
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/six.py
 %endif
 
 %if %{run_tests}
@@ -483,10 +473,10 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 
 %if %{with_python3}
 %files -n python3-matplotlib
-%license %{basepy3dir}/LICENSE/
-%doc %{basepy3dir}/README.rst
-%doc %{basepy3dir}/CHANGELOG
-%doc %{basepy3dir}/PKG-INFO
+%license LICENSE/
+%doc README.rst
+%doc CHANGELOG
+%doc PKG-INFO
 %{python3_sitearch}/*egg-info
 %{python3_sitearch}/matplotlib-*-nspkg.pth
 %{python3_sitearch}/matplotlib/
