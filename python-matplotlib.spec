@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.4.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -65,13 +65,10 @@ Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
 
 BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
-BuildRequires:  gtk2-devel
 BuildRequires:  libpng-devel
 BuildRequires:  qhull-devel
 BuildRequires:  python-six
 BuildRequires:  numpy
-BuildRequires:  pycairo-devel
-BuildRequires:  pygtk2-devel
 BuildRequires:  pyparsing
 BuildRequires:  python-pycxx-devel
 BuildRequires:  python-dateutil
@@ -94,8 +91,6 @@ Requires:       dejavu-sans-fonts
 Requires:       dvipng
 Requires:       python-six
 Requires:       numpy
-Requires:       pycairo
-Requires:       pygtk2
 Requires:       pyparsing
 Requires:       python-dateutil
 Requires:       pytz
@@ -140,6 +135,32 @@ Requires:       python-qt5
 %description    qt5
 %{summary}
 %endif # with_qt5
+
+%package        gtk
+Summary:        GTK backend for python-matplotlib
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+BuildRequires:  gtk2-devel
+BuildRequires:  pygtk2-devel
+BuildRequires:  pycairo-devel
+Requires:       pycairo
+Requires:       pygtk2
+
+%description    gtk
+%{summary}
+
+%package        gtk3
+Summary:        GTK3 backend for python-matplotlib
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+# This should be converted to typelib(Gtk) when supported
+BuildRequires:  gtk3
+BuildRequires:  pygobject3-base
+Requires:       gtk3%{?_isa}
+Requires:       pygobject3-base%{?_isa}
+
+%description    gtk3
+%{summary}
 
 %package        tk
 Summary:        Tk backend for python-matplotlib
@@ -261,6 +282,20 @@ Requires:       python3-qt5
 %description -n python3-matplotlib-qt5
 %{summary}
 %endif # with_qt5
+
+# gtk2 never worked in Python 3 afaict, so no need for -gtk subpackage
+%package -n     python3-matplotlib-gtk3
+Summary:        GTK3 backend for python3-matplotlib
+Group:          Development/Libraries
+Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
+# This should be converted to typelib(Gtk) when supported
+BuildRequires:  gtk3
+BuildRequires:  python3-gobject
+Requires:       gtk3%{?_isa}
+Requires:       python3-gobject%{?_isa}
+
+%description -n python3-matplotlib-gtk3
+%{summary}
 
 %package -n     python3-matplotlib-tk
 Summary:        Tk backend for python3-matplotlib
@@ -387,10 +422,10 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %{python_sitearch}/matplotlib/
 %{python_sitearch}/mpl_toolkits/
 %{python_sitearch}/pylab.py*
-%exclude %{python_sitearch}/matplotlib/backends/backend_qt4.*
-%exclude %{python_sitearch}/matplotlib/backends/backend_qt4agg.*
-%exclude %{python_sitearch}/matplotlib/backends/backend_qt5.*
-%exclude %{python_sitearch}/matplotlib/backends/backend_qt5agg.*
+%exclude %{python_sitearch}/matplotlib/backends/backend_qt4*
+%exclude %{python_sitearch}/matplotlib/backends/backend_qt5*
+%exclude %{python_sitearch}/matplotlib/backends/backend_gtk*
+%exclude %{python_sitearch}/matplotlib/backends/_gtkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/tkagg.*
 %exclude %{python_sitearch}/matplotlib/backends/_tkagg.so
@@ -407,6 +442,15 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %{python_sitearch}/matplotlib/backends/backend_qt5.*
 %{python_sitearch}/matplotlib/backends/backend_qt5agg.*
 %endif # with_qt5
+
+%files gtk
+%{python_sitearch}/matplotlib/backends/backend_gtk.py*
+%{python_sitearch}/matplotlib/backends/backend_gtkagg.py*
+%{python_sitearch}/matplotlib/backends/backend_gtkcairo.py*
+%{python_sitearch}/matplotlib/backends/_gtkagg.so
+
+%files gtk3
+%{python_sitearch}/matplotlib/backends/backend_gtk3*.py*
 
 %files tk
 %{python_sitearch}/matplotlib/backends/backend_tkagg.py*
@@ -449,14 +493,12 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %{python3_sitearch}/mpl_toolkits/
 %{python3_sitearch}/pylab.py*
 %{python3_sitearch}/__pycache__/*
-%exclude %{python3_sitearch}/matplotlib/backends/backend_qt4.*
-%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4.*
-%exclude %{python3_sitearch}/matplotlib/backends/backend_qt4agg.*
-%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4agg.*
-%exclude %{python3_sitearch}/matplotlib/backends/backend_qt5.*
-%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5.*
-%exclude %{python3_sitearch}/matplotlib/backends/backend_qt5agg.*
-%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5agg.*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_qt4*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt4*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_qt5*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5*
+%exclude %{python3_sitearch}/matplotlib/backends/backend_gtk*
+%exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_gtk*
 %exclude %{python3_sitearch}/matplotlib/backends/backend_tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/__pycache__/backend_tkagg.*
 %exclude %{python3_sitearch}/matplotlib/backends/tkagg.*
@@ -478,6 +520,10 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %{python3_sitearch}/matplotlib/backends/__pycache__/backend_qt5agg.*
 %endif # with_qt5
 
+%files -n python3-matplotlib-gtk3
+%{python3_sitearch}/matplotlib/backends/backend_gtk*
+%{python3_sitearch}/matplotlib/backends/__pycache__/backend_gtk*
+
 %files -n python3-matplotlib-tk
 %{python3_sitearch}/matplotlib/backends/backend_tkagg.py*
 %{python3_sitearch}/matplotlib/backends/__pycache__/backend_tkagg.*
@@ -487,6 +533,11 @@ PYTHONPATH=$RPM_BUILD_ROOT%{python3_sitearch} \
 %endif
 
 %changelog
+* Wed Feb 25 2015 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.4.3-4
+- Split out python-matplotlib-gtk, python-matplotlib-gtk3,
+  python3-matplotlib-gtk3 subpackages (#1067373)
+- Add missing requirements on gtk
+
 * Tue Feb 24 2015 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.4.3-3
 - Use %%license, add skimage to build requirements
 
