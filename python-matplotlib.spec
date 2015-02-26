@@ -26,6 +26,18 @@
 # CocoaAgg MacOSX Qt4Agg Qt5Agg TkAgg WX WXAgg Agg Cairo GDK PS PDF SVG
 %global backend                 TkAgg
 
+%if "%{backend}" == "TkAgg"
+%global backend_subpackage tk
+%else
+%  if "%{backend}" == "Qt4Agg"
+%global backend_subpackage qt4
+%  else
+%    if "%{backend}" == "Qt5Agg"
+%global backend_subpackage qt5
+%    endif
+%  endif
+%endif
+
 # https://fedorahosted.org/fpc/ticket/381
 %global with_bundled_fonts      1
 
@@ -94,20 +106,7 @@ Requires:	stix-fonts
 %endif
 Requires:       %{name}-data = %{version}-%{release}
 
-# GTKAgg does not require extra subpackages, but does not work with python3
-%if "%{backend}" == "TkAgg"
-Requires:       %{name}-tk%{?_isa} = %{version}-%{release}
-%else
-%  if "%{backend}" == "Qt4Agg"
-Requires:       %{name}-qt4%{?_isa} = %{version}-%{release}
-%  else
-%    if %{with_qt5}
-%      if "%{backend}" == "Qt5Agg"
-Requires:       %{name}-qt5%{?_isa} = %{version}-%{release}
-%      endif
-%    endif
-%  endif
-%endif
+%{?backend_subpackage:Requires: %{name}-%{backend_subpackage}%{?_isa} = %{version}-%{release}}
 
 %description
 Matplotlib is a python 2D plotting library which produces publication
@@ -227,19 +226,8 @@ Requires:	stix-math-fonts
 Requires:	stix-fonts
 %endif
 Requires:       %{name}-data = %{version}-%{release}
-%if "%{backend}" == "TkAgg"
-Requires:       python3-matplotlib-tk%{?_isa} = %{version}-%{release}
-%else
-%  if "%{backend}" == "Qt4Agg"
-Requires:       python3-matplotlib-qt4%{?_isa} = %{version}-%{release}
-%  else
-%    if %{with_qt5}
-%      if "%{backend}" == "Qt5Agg"
-Requires:       python3-matplotlib-qt5%{?_isa} = %{version}-%{release}
-%      endif
-%    endif
-%  endif
-%endif
+
+Requires: python3-matplotlib-%{?backend_subpackage}%{!?backend_subpackage:tk}%{?_isa} = %{version}-%{release}
 
 %description -n python3-matplotlib
 Matplotlib is a python 2D plotting library which produces publication
