@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.4.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -523,6 +523,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 1.4.3-5
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Wed Feb 25 2015 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.4.3-4
 - Split out python-matplotlib-gtk, python-matplotlib-gtk3,
   python3-matplotlib-gtk3 subpackages (#1067373)
