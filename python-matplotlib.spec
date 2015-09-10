@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.4.3
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -62,6 +62,7 @@ Patch2:         20_matplotlibrc_path_search_fix.patch
 Patch3:         40_bts608939_draw_markers_description.patch
 Patch4:         50_bts608942_spaces_in_param_args.patch
 Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
+Patch6:         matplotlib-1.4.3-cbook.restrict_dict.patch
 
 BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
@@ -334,6 +335,7 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
@@ -523,6 +525,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Sun Nov 15 2015 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-8
+- Pick upstream patch for fixing the gdk backend #1231748
+
 * Tue Nov 10 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4.3-7
 - Rebuilt for https://fedoraproject.org/wiki/Changes/python3.5
 

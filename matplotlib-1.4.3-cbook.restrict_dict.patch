@@ -1,0 +1,32 @@
+From 2e445c2c4f66f1e0de9779a3fd966aaf8d8ed2c5 Mon Sep 17 00:00:00 2001
+From: Thomas A Caswell <tcaswell@gmail.com>
+Date: Sun, 17 May 2015 23:45:44 -0400
+Subject: [PATCH] Merge pull request #4439 from tswsl1989/restrict_dict_gdk
+
+FIX : Import cbook.restrict_dict into backend_gdk
+---
+ lib/matplotlib/backends/backend_gdk.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/matplotlib/backends/backend_gdk.py b/lib/matplotlib/backends/backend_gdk.py
+index fc705fe..024c27e 100644
+--- a/lib/matplotlib/backends/backend_gdk.py
++++ b/lib/matplotlib/backends/backend_gdk.py
+@@ -26,7 +26,7 @@ def fn_name(): return sys._getframe(1).f_code.co_name
+ from matplotlib._pylab_helpers import Gcf
+ from matplotlib.backend_bases import RendererBase, GraphicsContextBase, \
+      FigureManagerBase, FigureCanvasBase
+-from matplotlib.cbook import is_string_like
++from matplotlib.cbook import is_string_like, restrict_dict
+ from matplotlib.figure import Figure
+ from matplotlib.mathtext import MathTextParser
+ from matplotlib.transforms import Affine2D
+@@ -477,7 +477,7 @@ def _print_image(self, filename, format, *args, **kwargs):
+ 
+         # set the default quality, if we are writing a JPEG.
+         # http://www.pygtk.org/docs/pygtk/class-gdkpixbuf.html#method-gdkpixbuf--save
+-        options = cbook.restrict_dict(kwargs, ['quality'])
++        options = restrict_dict(kwargs, ['quality'])
+         if format in ['jpg','jpeg']:
+            if 'quality' not in options:
+               options['quality'] = rcParams['savefig.jpeg_quality']
