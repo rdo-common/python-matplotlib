@@ -88,6 +88,21 @@ BuildRequires:  python2-devel
 BuildRequires:  pytz
 BuildRequires:  xorg-x11-server-Xvfb
 BuildRequires:  zlib-devel
+
+%description
+Matplotlib is a python 2D plotting library which produces publication
+quality figures in a variety of hardcopy formats and interactive
+environments across platforms. matplotlib can be used in python
+scripts, the python and ipython shell, web application servers, and
+six graphical user interface toolkits.
+
+Matplotlib tries to make easy things easy and hard things possible.
+You can generate plots, histograms, power spectra, bar charts,
+errorcharts, scatterplots, etc, with just a few lines of code.
+
+%package -n python2-matplotlib
+Summary:        Python 2D plotting library
+%{?python_provide:%python_provide python2-matplotlib}
 Requires:       dejavu-sans-fonts
 Requires:       dvipng
 Requires:       python-six
@@ -103,8 +118,7 @@ Requires:       stix-fonts
 Requires:       %{name}-data = %{version}-%{release}
 
 %{?backend_subpackage:Requires: %{name}-%{backend_subpackage}%{?_isa} = %{version}-%{release}}
-
-%description
+%description -n python2-matplotlib
 Matplotlib is a python 2D plotting library which produces publication
 quality figures in a variety of hardcopy formats and interactive
 environments across platforms. matplotlib can be used in python
@@ -115,82 +129,89 @@ Matplotlib tries to make easy things easy and hard things possible.
 You can generate plots, histograms, power spectra, bar charts,
 errorcharts, scatterplots, etc, with just a few lines of code.
 
-%package        qt4
+%package -n python2-matplotlib-qt4
+%{?python_provide:%python_provide python2-matplotlib-qt4}
 Summary:        Qt4 backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 BuildRequires:  PyQt4-devel
 Requires:       PyQt4
 
-%description    qt4
+%description -n python2-matplotlib-qt4
 %{summary}
 
 %if %{with_qt5}
-%package        qt5
+%package -n python2-matplotlib-qt5
+%{?python_provide:%python_provide python2-matplotlib-qt5}
 Summary:        Qt5 backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 BuildRequires:  python-qt5
 Requires:       python-qt5
 
-%description    qt5
+%description -n python2-matplotlib-qt5
 %{summary}
 %endif # with_qt5
 
-%package        gtk
+%package -n python2-matplotlib-gtk
+%{?python_provide:%python_provide python2-matplotlib-gtk}
 Summary:        GTK backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 BuildRequires:  gtk2-devel
 BuildRequires:  pygtk2-devel
 BuildRequires:  pycairo-devel
 Requires:       pycairo
 Requires:       pygtk2
 
-%description    gtk
+%description -n python2-matplotlib-gtk
 %{summary}
 
-%package        gtk3
+%package -n python2-matplotlib-gtk3
+%{?python_provide:%python_provide python2-matplotlib-gtk3}
 Summary:        GTK3 backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 # This should be converted to typelib(Gtk) when supported
 BuildRequires:  gtk3
 BuildRequires:  pygobject3-base
 Requires:       gtk3%{?_isa}
 Requires:       pygobject3-base%{?_isa}
 
-%description    gtk3
+%description -n python2-matplotlib-gtk3
 %{summary}
 
-%package        tk
+%package -n python2-matplotlib-tk
+%{?python_provide:%python_provide python2-matplotlib-tk}
 Summary:        Tk backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 BuildRequires:  tcl-devel
 BuildRequires:  tkinter
 BuildRequires:  tk-devel
 Requires:       tkinter
 
-%description    tk
+%description -n python2-matplotlib-tk
 %{summary}
 
 %if %{with_wx}
-%package        wx
+%package -n python2-matplotlib-wx
+%{?python_provide:%python_provide python2-matplotlib-wx}
 Summary:        wxPython backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python-matplotlib%{?_isa} = %{version}-%{release}
 BuildRequires:  wxPython-devel
 Requires:       wxPython
 
-%description    wx
+%description -n python2-matplotlib-wx
 %{summary}
 %endif # with_wx
 
-%package        doc
+%package -n python2-matplotlib-doc
+%{?python_provide:%python_provide python2-matplotlib-doc}
 Summary:        Documentation files for python-matplotlib
 Group:          Documentation
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 %if %{with_html}
 BuildRequires:  python-sphinx
 BuildRequires:  tex(latex)
@@ -199,31 +220,34 @@ BuildRequires:  dvipng
 BuildRequires:  graphviz
 %endif
 
-%description    doc
+%description -n python2-matplotlib-doc
 %{summary}
 
-%package        data
+%package -n python-matplotlib-data
+%{?python_provide:%python_provide python-matplotlib-data}
 Summary:        Data used by python-matplotlib
 %if %{with_bundled_fonts}
-Requires:       %{name}-data-fonts = %{version}-%{release}
+Requires:       python-matplotlib-data-fonts = %{version}-%{release}
 %endif
 BuildArch:      noarch
 
-%description    data
+%description -n python-matplotlib-data
 %{summary}
 
 %if %{with_bundled_fonts}
-%package        data-fonts
+%package -n python-matplotlib-data-fonts
+%{?python_provide:%python_provide python-matplotlib-data-fonts}
 Summary:        Fonts used by python-matplotlib
-Requires:       %{name}-data = %{version}-%{release}
+Requires:       python-matplotlib-data = %{version}-%{release}
 BuildArch:      noarch
 
-%description    data-fonts
+%description -n python-matplotlib-data-fonts
 %{summary}
 %endif
 
 %if %{with_python3}
 %package -n     python3-matplotlib
+%{?python_provide:%python_provide python3-matplotlib}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 BuildRequires:  python3-cairo
@@ -263,6 +287,7 @@ You can generate plots, histograms, power spectra, bar charts,
 errorcharts, scatterplots, etc, with just a few lines of code.
 
 %package -n     python3-matplotlib-qt4
+%{?python_provide:%python_provide python3-matplotlib-qt4}
 Summary:        Qt4 backend for python3-matplotlib
 Group:          Development/Libraries
 Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
@@ -274,6 +299,7 @@ Requires:       python3-PyQt4
 
 %if %{with_qt5}
 %package -n     python3-matplotlib-qt5
+%{?python_provide:%python_provide python3-matplotlib-qt5}
 Summary:        Qt5 backend for python3-matplotlib
 Group:          Development/Libraries
 Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
@@ -286,6 +312,7 @@ Requires:       python3-qt5
 
 # gtk2 never worked in Python 3 afaict, so no need for -gtk subpackage
 %package -n     python3-matplotlib-gtk3
+%{?python_provide:%python_provide python3-matplotlib-gtk3}
 Summary:        GTK3 backend for python3-matplotlib
 Group:          Development/Libraries
 Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
@@ -299,6 +326,7 @@ Requires:       python3-gobject%{?_isa}
 %{summary}
 
 %package -n     python3-matplotlib-tk
+%{?python_provide:%python_provide python3-matplotlib-tk}
 Summary:        Tk backend for python3-matplotlib
 Group:          Development/Libraries
 Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
@@ -404,7 +432,7 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 %endif # run_tests
 
-%files
+%files -n python2-matplotlib
 %license LICENSE/
 %doc README.rst
 %doc CHANGELOG
@@ -425,43 +453,43 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %exclude %{python2_sitearch}/matplotlib/backends/backend_wxagg.*
 %exclude %{_pkgdocdir}/*/
 
-%files qt4
+%files -n python2-matplotlib-qt4
 %{python2_sitearch}/matplotlib/backends/backend_qt4.*
 %{python2_sitearch}/matplotlib/backends/backend_qt4agg.*
 
 %if %{with_qt5}
-%files qt5
+%files -n python2-matplotlib-qt5
 %{python2_sitearch}/matplotlib/backends/backend_qt5.*
 %{python2_sitearch}/matplotlib/backends/backend_qt5agg.*
 %endif # with_qt5
 
-%files gtk
+%files -n python2-matplotlib-gtk
 %{python2_sitearch}/matplotlib/backends/backend_gtk.py*
 %{python2_sitearch}/matplotlib/backends/backend_gtkagg.py*
 %{python2_sitearch}/matplotlib/backends/backend_gtkcairo.py*
 %{python2_sitearch}/matplotlib/backends/_gtkagg.so
 
-%files gtk3
+%files -n python2-matplotlib-gtk3
 %{python2_sitearch}/matplotlib/backends/backend_gtk3*.py*
 
-%files tk
+%files -n python2-matplotlib-tk
 %{python2_sitearch}/matplotlib/backends/backend_tkagg.py*
 %{python2_sitearch}/matplotlib/backends/tkagg.py*
 %{python2_sitearch}/matplotlib/backends/_tkagg.so
 
 %if %{with_wx}
-%files wx
+%files -n python2-matplotlib-wx
 %{python2_sitearch}/matplotlib/backends/backend_wx.*
 %{python2_sitearch}/matplotlib/backends/backend_wxagg.*
 %endif # with_wx
 
-%files doc
+%files -n python2-matplotlib-doc
 %doc examples
 %if %{with_html}
 %doc doc/build/html/*
 %endif
 
-%files data
+%files -n python-matplotlib-data
 %{_sysconfdir}/matplotlibrc
 %{_datadir}/matplotlib/mpl-data/
 %if %{with_bundled_fonts}
@@ -469,7 +497,7 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %if %{with_bundled_fonts}
-%files data-fonts
+%files -n python-matplotlib-data-fonts
 %{_datadir}/matplotlib/mpl-data/fonts/
 %endif
 
@@ -527,6 +555,7 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %changelog
 * Sun Nov 15 2015 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-8
 - Pick upstream patch for fixing the gdk backend #1231748
+- Add python2 subpackages and use python_provide
 
 * Tue Nov 10 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4.3-7
 - Rebuilt for https://fedoraproject.org/wiki/Changes/python3.5
