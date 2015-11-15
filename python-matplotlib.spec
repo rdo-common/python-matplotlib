@@ -4,7 +4,7 @@
 %else
 %global with_python3            0
 %endif
-%global __provides_exclude_from	.*/site-packages/.*\\.so$
+%global __provides_exclude_from .*/site-packages/.*\\.so$
 %global with_html               1
 %global run_tests               0
 
@@ -96,9 +96,9 @@ Requires:       pyparsing
 Requires:       python-dateutil
 Requires:       pytz
 %if 0%{?fedora} >= 18
-Requires:	stix-math-fonts
+Requires:       stix-math-fonts
 %else
-Requires:	stix-fonts
+Requires:       stix-fonts
 %endif
 Requires:       %{name}-data = %{version}-%{release}
 
@@ -243,9 +243,9 @@ Requires:       python3-pyparsing
 Requires:       python3-dateutil
 Requires:       python3-pytz
 %if 0%{?fedora} >= 18
-Requires:	stix-math-fonts
+Requires:       stix-math-fonts
 %else
-Requires:	stix-fonts
+Requires:       stix-fonts
 %endif
 Requires:       %{name}-data = %{version}-%{release}
 
