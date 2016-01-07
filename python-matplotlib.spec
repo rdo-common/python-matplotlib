@@ -117,7 +117,7 @@ Requires:       stix-fonts
 %endif
 Requires:       %{name}-data = %{version}-%{release}
 
-%{?backend_subpackage:Requires: %{name}-%{backend_subpackage}%{?_isa} = %{version}-%{release}}
+%{?backend_subpackage:Requires: python2-matplotlib-%{backend_subpackage}%{?_isa} = %{version}-%{release}}
 %description -n python2-matplotlib
 Matplotlib is a python 2D plotting library which produces publication
 quality figures in a variety of hardcopy formats and interactive
@@ -555,6 +555,7 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %changelog
 * Thu Jan 07 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-9
 - regenerate tarball to exclude lena image (#1295174)
+- Fix requiring the correct backend from the main package
 
 * Sun Nov 15 2015 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-8
 - Pick upstream patch for fixing the gdk backend #1231748
