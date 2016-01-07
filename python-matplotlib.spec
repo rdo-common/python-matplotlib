@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.4.3
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -553,9 +553,11 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Thu Jan 07 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-10
+- Fix requiring the correct backend from the main package
+
 * Thu Jan 07 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-9
 - regenerate tarball to exclude lena image (#1295174)
-- Fix requiring the correct backend from the main package
 
 * Sun Nov 15 2015 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-8
 - Pick upstream patch for fixing the gdk backend #1231748
