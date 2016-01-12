@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.4.3
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -199,7 +199,7 @@ Requires:       tkinter
 %{?python_provide:%python_provide python2-matplotlib-wx}
 Summary:        wxPython backend for python-matplotlib
 Group:          Development/Libraries
-Requires:       python-matplotlib%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 BuildRequires:  wxPython-devel
 Requires:       wxPython
 
@@ -553,6 +553,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Jan 12 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-11
+- Fix another requires of the main package
+
 * Thu Jan 07 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-10
 - Fix requiring the correct backend from the main package
 
