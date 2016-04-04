@@ -45,8 +45,8 @@
 %global _docdir_fmt %{name}
 
 Name:           python-matplotlib
-Version:        1.4.3
-Release:        13%{?dist}
+Version:        1.5.1
+Release:        1%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -56,13 +56,9 @@ URL:            http://matplotlib.org
 Source0:        matplotlib-%{version}-without-extern.tar.xz
 Source1:        setup.cfg
 
-Patch0:         %{name}-noagg.patch
-Patch1:         %{name}-system-cxx.patch
+#Patch0:         %{name}-noagg.patch
 Patch2:         20_matplotlibrc_path_search_fix.patch
-Patch3:         40_bts608939_draw_markers_description.patch
-Patch4:         50_bts608942_spaces_in_param_args.patch
 Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
-Patch6:         matplotlib-1.4.3-cbook.restrict_dict.patch
 
 BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
@@ -90,6 +86,7 @@ BuildRequires:  xorg-x11-server-Xvfb
 BuildRequires:  zlib-devel
 
 Provides:       bundled(agg) = 2.4
+Provides:       bundled(ttconv)
 
 %description
 Matplotlib is a python 2D plotting library which produces publication
@@ -269,6 +266,8 @@ Requires:       python3-cairo
 Requires:       python3-pyparsing
 Requires:       python3-dateutil
 Requires:       python3-pytz
+Requires:       dejavu-sans-fonts
+Requires:       dvipng
 %if 0%{?fedora} >= 18
 Requires:       stix-math-fonts
 %else
@@ -360,14 +359,8 @@ fi
 sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %endif
 
-# Remove references to bundled libraries
-%patch0 -b .noagg
-%patch1 -b .cxx
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
@@ -438,9 +431,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 
 %files -n python2-matplotlib
 %license LICENSE/
-%doc README.rst
+%doc CONTRIBUTING.md
 %doc CHANGELOG
-%doc PKG-INFO
+%doc README.rst
 %{python2_sitearch}/*egg-info
 %{python2_sitearch}/matplotlib-*-nspkg.pth
 %{python2_sitearch}/matplotlib/
@@ -508,9 +501,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %if %{with_python3}
 %files -n python3-matplotlib
 %license LICENSE/
-%doc README.rst
+%doc CONTRIBUTING.md
 %doc CHANGELOG
-%doc PKG-INFO
+%doc README.rst
 %{python3_sitearch}/*egg-info
 %{python3_sitearch}/matplotlib-*-nspkg.pth
 %{python3_sitearch}/matplotlib/
@@ -557,6 +550,13 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Mon Apr 04 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.5.1-1
+- update to 1.5.1 (#1276806)
+- Add missing requires of dvipng to python3-matplotlib (#1270202)
+- use bundled agg (#1276806)
+- Drop cxx patch (was dropped upstream)
+- Regenerate search path patch2
+
 * Mon Apr 04 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-13
 - Require the qt5 subpackage from the qt4 subpackage (#1219556)
 
