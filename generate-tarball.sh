@@ -14,7 +14,7 @@ test -f $file || wget -v https://github.com/matplotlib/matplotlib/archive/$file
 rm -rf matplotlib-${version}
 tar xzf $file
 
-rm -vr matplotlib-${version}/extern/{agg24,CXX,qhull}
+rm -vr matplotlib-${version}/extern/qhull
 rm -vr matplotlib-${version}/lib/matplotlib/mpl-data/sample_data/lena.*
 
 rm -f $result
