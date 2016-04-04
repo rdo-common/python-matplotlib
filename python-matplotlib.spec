@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.4.3
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -136,6 +136,7 @@ errorcharts, scatterplots, etc, with just a few lines of code.
 Summary:        Qt4 backend for python-matplotlib
 Group:          Development/Libraries
 Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
+Requires:       python2-matplotlib-qt5
 BuildRequires:  PyQt4-devel
 Requires:       PyQt4
 
@@ -293,6 +294,7 @@ errorcharts, scatterplots, etc, with just a few lines of code.
 Summary:        Qt4 backend for python3-matplotlib
 Group:          Development/Libraries
 Requires:       python3-matplotlib%{?_isa} = %{version}-%{release}
+Requires:       python3-matplotlib-qt5
 BuildRequires:  python3-PyQt4-devel
 Requires:       python3-PyQt4
 
@@ -555,6 +557,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Mon Apr 04 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.4.3-13
+- Require the qt5 subpackage from the qt4 subpackage (#1219556)
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.3-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
