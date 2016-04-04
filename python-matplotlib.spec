@@ -71,6 +71,7 @@ BuildRequires:  python-pycxx-devel
 BuildRequires:  python-dateutil
 BuildRequires:  python-setuptools
 %if %{with_html}
+BuildRequires:  python-ipython-sphinx
 BuildRequires:  python-numpydoc
 BuildRequires:  python-scikit-image
 %endif
