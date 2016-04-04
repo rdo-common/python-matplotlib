@@ -6,9 +6,10 @@ version=$1
 
 dir=matplotlib-${version}
 file=matplotlib-${version}.tar.gz
+file=v${version}.tar.gz
 result=matplotlib-${version}-without-extern.tar.xz
 
-test -f $file || wget -v http://downloads.sourceforge.net/matplotlib/$file
+test -f $file || wget -v https://github.com/matplotlib/matplotlib/archive/$file
 
 rm -rf matplotlib-${version}
 tar xzf $file
