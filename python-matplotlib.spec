@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.5.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -60,7 +60,6 @@ Source1:        setup.cfg
 Patch2:         20_matplotlibrc_path_search_fix.patch
 Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
 
-BuildRequires:  agg-devel
 BuildRequires:  freetype-devel
 BuildRequires:  libpng-devel
 BuildRequires:  qhull-devel
@@ -74,6 +73,7 @@ BuildRequires:  python-setuptools
 BuildRequires:  python-ipython-sphinx
 BuildRequires:  python-numpydoc
 BuildRequires:  python-scikit-image
+BuildRequires:  python2-cycler
 %endif
 %if %{run_tests}
 BuildRequires:  python-nose
@@ -261,6 +261,7 @@ BuildRequires:  python3-pycxx-devel
 BuildRequires:  python3-pyparsing
 BuildRequires:  python3-pytz
 BuildRequires:  python3-six
+BuildRequires:  python3-cycler
 Requires:       python3-six
 Requires:       python3-numpy
 Requires:       python3-cairo
@@ -551,6 +552,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Apr 05 2016 Jon Ciesla <limburgher@gmail.com> - 1.5.1-2
+- Drop agg-devel BR, fix sphinx build with python*cycler BR
+
 * Mon Apr 04 2016 Thomas Spura <tomspur@fedoraproject.org> - 1.5.1-1
 - update to 1.5.1 (#1276806)
 - Add missing requires of dvipng to python3-matplotlib (#1270202)
