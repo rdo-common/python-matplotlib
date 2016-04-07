@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.5.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -108,6 +108,7 @@ Requires:       dvipng
 Requires:       python-six
 Requires:       numpy
 Requires:       pyparsing
+Requires:       python2-cycler
 Requires:       python-dateutil
 Requires:       pytz
 %if 0%{?fedora} >= 18
@@ -266,6 +267,7 @@ Requires:       python3-six
 Requires:       python3-numpy
 Requires:       python3-cairo
 Requires:       python3-pyparsing
+Requires:       python3-cycler
 Requires:       python3-dateutil
 Requires:       python3-pytz
 Requires:       dejavu-sans-fonts
@@ -552,6 +554,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Wed Apr 6 2016 Orion Poplawski <orion@cora.nwra.com> - 1.5.1-3
+- Add requires python-cycler
+
 * Tue Apr 05 2016 Jon Ciesla <limburgher@gmail.com> - 1.5.1-2
 - Drop agg-devel BR, fix sphinx build with python*cycler BR
 
