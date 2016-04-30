@@ -366,7 +366,7 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %patch2 -p1
 %patch5 -p1
 
-%if 0%{fedora} > 24
+%if 0%{?fedora} > 24
 # Installation paths changed
 sed -i -e 's,\"qhull/qhull_a.h\",<libqhull/qhull_a.h>,' src/qhull_wrap.c
 sed -i -e "s|os.path.join(x, 'qhull')|os.path.join(x, 'libqhull')|" setupext.py
