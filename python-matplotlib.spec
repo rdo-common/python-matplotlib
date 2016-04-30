@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.5.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -366,6 +366,12 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %patch2 -p1
 %patch5 -p1
 
+%if 0%{fedora} > 24
+# Installation paths changed
+sed -i -e 's,\"qhull/qhull_a.h\",<libqhull/qhull_a.h>,' src/qhull_wrap.c
+sed -i -e "s|os.path.join(x, 'qhull')|os.path.join(x, 'libqhull')|" setupext.py
+%endif
+
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 
 %build
@@ -554,6 +560,10 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Sat Apr 30 2016 Ralf Corsépius <corsepiu@fedoraproject.org> - 1.5.1-4
+- Rebuild for qhull-2015.2-1.
+- Reflect qhull_a.h's location having changed.
+
 * Wed Apr 6 2016 Orion Poplawski <orion@cora.nwra.com> - 1.5.1-3
 - Add requires python-cycler
 
