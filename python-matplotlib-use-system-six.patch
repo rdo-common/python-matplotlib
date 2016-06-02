@@ -1,0 +1,43 @@
+diff -up matplotlib-1.5.1/setupext.py.six matplotlib-1.5.1/setupext.py
+--- matplotlib-1.5.1/setupext.py.six	2016-01-10 23:20:20.000000000 +0100
++++ matplotlib-1.5.1/setupext.py	2016-05-18 13:44:21.534494158 +0200
+@@ -1010,7 +1010,7 @@ class Qhull(SetupPackage):
+             # present on this system, so check if the header files can be
+             # found.
+             include_dirs = [
+-                os.path.join(x, 'qhull') for x in get_include_dirs()]
++                os.path.join(x, 'libqhull') for x in get_include_dirs()]
+             if has_include_file(include_dirs, 'qhull_a.h'):
+                 return 'Using system Qhull (version unknown, no pkg-config info)'
+             else:
+@@ -1026,6 +1026,18 @@ class Qhull(SetupPackage):
+             ext.sources.extend(glob.glob('extern/qhull/*.c'))
+ 
+ 
++class Six(SetupPackage):
++    name = "six"
++
++    def check(self):
++        try:
++            import six
++        except ImportError:
++            return 'not found. pip may install it below.'
++
++        return 'version %s' % six.__version__
++
++
+ class TTConv(SetupPackage):
+     name = "ttconv"
+ 
+diff -up matplotlib-1.5.1/setup.py.six matplotlib-1.5.1/setup.py
+--- matplotlib-1.5.1/setup.py.six	2016-01-10 23:20:20.000000000 +0100
++++ matplotlib-1.5.1/setup.py	2016-05-18 13:44:21.528494040 +0200
+@@ -84,7 +84,7 @@ mpl_packages = [
+     setupext.Delaunay(),
+     setupext.QhullWrap(),
+     setupext.Tri(),
+-    setupext.Externals(),
++    setupext.Six(),
+     'Optional subpackages',
+     setupext.SampleData(),
+     setupext.Toolkits(),

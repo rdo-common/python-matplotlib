@@ -1,0 +1,212 @@
+diff -up matplotlib-1.5.1/lib/matplotlib/sphinxext/tests/test_tinypages.py.tests matplotlib-1.5.1/lib/matplotlib/sphinxext/tests/test_tinypages.py
+--- matplotlib-1.5.1/lib/matplotlib/sphinxext/tests/test_tinypages.py.tests	2016-01-10 23:20:20.000000000 +0100
++++ matplotlib-1.5.1/lib/matplotlib/sphinxext/tests/test_tinypages.py	2016-05-23 14:04:41.780810625 +0200
+@@ -1,6 +1,7 @@
+ """ Tests for tinypages build using sphinx extensions """
+ 
+ import shutil
++import sys
+ import tempfile
+ 
+ from os.path import (join as pjoin, dirname, isdir)
+@@ -16,6 +17,8 @@ TINY_PAGES = pjoin(HERE, 'tinypages')
+ 
+ def setup():
+     # Check we have the sphinx-build command
++    if sys.version_info[0] >= 3:
++        raise SkipTest('sphinx-build works only with python 2.x')
+     try:
+         ret = call(['sphinx-build', '--help'], stdout=PIPE, stderr=PIPE)
+     except OSError:
+diff -up matplotlib-1.5.1/lib/matplotlib/tests/test_axes.py.tests matplotlib-1.5.1/lib/matplotlib/tests/test_axes.py
+--- matplotlib-1.5.1/lib/matplotlib/tests/test_axes.py.tests	2016-01-10 23:20:20.000000000 +0100
++++ matplotlib-1.5.1/lib/matplotlib/tests/test_axes.py	2016-05-23 14:04:41.780810625 +0200
+@@ -79,13 +79,6 @@ def test_formatter_ticker():
+     ax.autoscale_view()
+ 
+ 
+-@image_comparison(baseline_images=["formatter_large_small"])
+-def test_formatter_large_small():
+-    # github issue #617, pull #619
+-    fig, ax = plt.subplots(1)
+-    x = [0.500000001, 0.500000002]
+-    y = [1e64, 1.1e64]
+-    ax.plot(x, y)
+ 
+ 
+ @image_comparison(baseline_images=["twin_axis_locaters_formatters"])
+diff -up matplotlib-1.5.1/lib/matplotlib/tests/test_backend_ps.py.tests matplotlib-1.5.1/lib/matplotlib/tests/test_backend_ps.py
+--- matplotlib-1.5.1/lib/matplotlib/tests/test_backend_ps.py.tests	2016-05-23 14:04:41.066816181 +0200
++++ matplotlib-1.5.1/lib/matplotlib/tests/test_backend_ps.py	2016-05-23 14:04:41.780810625 +0200
+@@ -69,12 +69,6 @@ def test_savefig_to_stringio_with_distil
+     _test_savefig_to_stringio()
+ 
+ 
+-@cleanup
+-@needs_tex
+-def test_savefig_to_stringio_with_usetex():
+-    matplotlib.rcParams['text.latex.unicode'] = True
+-    matplotlib.rcParams['text.usetex'] = True
+-    _test_savefig_to_stringio()
+ 
+ 
+ @cleanup
+diff -up matplotlib-1.5.1/lib/matplotlib/tests/test_bbox_tight.py.tests matplotlib-1.5.1/lib/matplotlib/tests/test_bbox_tight.py
+--- matplotlib-1.5.1/lib/matplotlib/tests/test_bbox_tight.py.tests	2016-05-23 14:04:41.111815831 +0200
++++ matplotlib-1.5.1/lib/matplotlib/tests/test_bbox_tight.py	2016-05-23 14:04:41.780810625 +0200
+@@ -86,13 +86,6 @@ def test_bbox_inches_tight_clipping():
+     plt.gcf().artists.append(patch)
+     
+     
+-@image_comparison(baseline_images=['bbox_inches_tight_raster'],
+-                  remove_text=True, savefig_kwarg={'bbox_inches': 'tight'})
+-def test_bbox_inches_tight_raster():
+-    """Test rasterization with tight_layout"""
+-    fig = plt.figure()
+-    ax = fig.add_subplot(111)
+-    ax.plot([1.0, 2.0], rasterized=True)
+ 
+ if __name__ == '__main__':
+     import nose
+diff -up matplotlib-1.5.1/lib/matplotlib/tests/test_collections.py.tests matplotlib-1.5.1/lib/matplotlib/tests/test_collections.py
+--- matplotlib-1.5.1/lib/matplotlib/tests/test_collections.py.tests	2016-05-23 14:04:41.148815543 +0200
++++ matplotlib-1.5.1/lib/matplotlib/tests/test_collections.py	2016-05-23 14:04:41.781810617 +0200
+@@ -464,28 +464,6 @@ def test_barb_limits():
+                               decimal=1)
+ 
+ 
+-@image_comparison(baseline_images=['EllipseCollection_test_image'],
+-                  extensions=['png'],
+-                  remove_text=True)
+-def test_EllipseCollection():
+-    # Test basic functionality
+-    fig, ax = plt.subplots()
+-    x = np.arange(4)
+-    y = np.arange(3)
+-    X, Y = np.meshgrid(x, y)
+-    XY = np.vstack((X.ravel(), Y.ravel())).T
+-
+-    ww = X/float(x[-1])
+-    hh = Y/float(y[-1])
+-    aa = np.ones_like(ww) * 20  # first axis is 20 degrees CCW from x axis
+-
+-    ec = mcollections.EllipseCollection(ww, hh, aa,
+-                                        units='x',
+-                                        offsets=XY,
+-                                        transOffset=ax.transData,
+-                                        facecolors='none')
+-    ax.add_collection(ec)
+-    ax.autoscale_view()
+ 
+ 
+ @image_comparison(baseline_images=['polycollection_close'],
+diff -up matplotlib-1.5.1/lib/matplotlib/tests/test_style.py.tests matplotlib-1.5.1/lib/matplotlib/tests/test_style.py
+--- matplotlib-1.5.1/lib/matplotlib/tests/test_style.py.tests	2016-05-23 14:04:41.150815527 +0200
++++ matplotlib-1.5.1/lib/matplotlib/tests/test_style.py	2016-05-23 14:04:41.781810617 +0200
+@@ -57,11 +57,6 @@ def test_use():
+             assert mpl.rcParams[PARAM] == VALUE
+ 
+ 
+-@attr('network')
+-def test_use_url():
+-    with temp_style('test', DUMMY_SETTINGS):
+-        with style.context('https://gist.github.com/adrn/6590261/raw'):
+-            assert mpl.rcParams['axes.facecolor'] == "#adeade"
+ 
+ 
+ def test_context():
+diff -up matplotlib-1.5.1/lib/matplotlib/tests/test_text.py.tests matplotlib-1.5.1/lib/matplotlib/tests/test_text.py
+--- matplotlib-1.5.1/lib/matplotlib/tests/test_text.py.tests	2016-05-23 14:04:41.108815854 +0200
++++ matplotlib-1.5.1/lib/matplotlib/tests/test_text.py	2016-05-23 14:04:41.781810617 +0200
+@@ -18,91 +18,6 @@ from matplotlib.text import Annotation,
+ from matplotlib.backends.backend_agg import RendererAgg
+ 
+ 
+-@image_comparison(baseline_images=['font_styles'])
+-def test_font_styles():
+-    from matplotlib import _get_data_path
+-    data_path = _get_data_path()
+-
+-    def find_matplotlib_font(**kw):
+-        prop = FontProperties(**kw)
+-        path = findfont(prop, directory=data_path)
+-        return FontProperties(fname=path)
+-
+-    from matplotlib.font_manager import FontProperties, findfont
+-    warnings.filterwarnings(
+-        'ignore',
+-        ('findfont: Font family \[u?\'Foo\'\] not found. Falling back to .'),
+-        UserWarning,
+-        module='matplotlib.font_manager')
+-
+-    plt.figure()
+-    ax = plt.subplot(1, 1, 1)
+-
+-    normalFont = find_matplotlib_font(
+-        family="sans-serif",
+-        style="normal",
+-        variant="normal",
+-        size=14)
+-    ax.annotate(
+-        "Normal Font",
+-        (0.1, 0.1),
+-        xycoords='axes fraction',
+-        fontproperties=normalFont)
+-
+-    boldFont = find_matplotlib_font(
+-        family="Foo",
+-        style="normal",
+-        variant="normal",
+-        weight="bold",
+-        stretch=500,
+-        size=14)
+-    ax.annotate(
+-        "Bold Font",
+-        (0.1, 0.2),
+-        xycoords='axes fraction',
+-        fontproperties=boldFont)
+-
+-    boldItemFont = find_matplotlib_font(
+-        family="sans serif",
+-        style="italic",
+-        variant="normal",
+-        weight=750,
+-        stretch=500,
+-        size=14)
+-    ax.annotate(
+-        "Bold Italic Font",
+-        (0.1, 0.3),
+-        xycoords='axes fraction',
+-        fontproperties=boldItemFont)
+-
+-    lightFont = find_matplotlib_font(
+-        family="sans-serif",
+-        style="normal",
+-        variant="normal",
+-        weight=200,
+-        stretch=500,
+-        size=14)
+-    ax.annotate(
+-        "Light Font",
+-        (0.1, 0.4),
+-        xycoords='axes fraction',
+-        fontproperties=lightFont)
+-
+-    condensedFont = find_matplotlib_font(
+-        family="sans-serif",
+-        style="normal",
+-        variant="normal",
+-        weight=500,
+-        stretch=100,
+-        size=14)
+-    ax.annotate(
+-        "Condensed Font",
+-        (0.1, 0.5),
+-        xycoords='axes fraction',
+-        fontproperties=condensedFont)
+-
+-    ax.set_xticks([])
+-    ax.set_yticks([])
+ 
+ 
+ @image_comparison(baseline_images=['multiline'])

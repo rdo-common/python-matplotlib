@@ -6,7 +6,7 @@
 %endif
 %global __provides_exclude_from .*/site-packages/.*\\.so$
 %global with_html               1
-%global run_tests               0
+%global run_tests               1
 
 # On RHEL 7 onwards, don't build with wx:
 %if 0%{?rhel} >= 7
@@ -46,7 +46,7 @@
 
 Name:           python-matplotlib
 Version:        1.5.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -59,6 +59,9 @@ Source1:        setup.cfg
 #Patch0:         %{name}-noagg.patch
 Patch2:         20_matplotlibrc_path_search_fix.patch
 Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
+Patch6:         python-matplotlib-use-system-six.patch
+Patch7:         python-matplotlib-disable-failing-tests.patch
+Patch8:         python-matplotlib-disable-failing-tests-armv7hl.patch
 
 BuildRequires:  freetype-devel
 BuildRequires:  libpng-devel
@@ -77,7 +80,10 @@ BuildRequires:  python2-cycler
 %endif
 %if %{run_tests}
 BuildRequires:  python-nose
+BuildRequires:  python2-cycler
+BuildRequires:  python2-mock
 %if %{with_python3}
+BuildRequires:  python3-mock
 BuildRequires:  python3-nose
 %endif
 %endif
@@ -346,6 +352,7 @@ Requires:       python3-tkinter
 
 %prep
 %setup -q -n matplotlib-%{version}
+rm -r lib/matplotlib/externals
 
 # Copy setup.cfg to the builddir
 sed 's/\(backend = \).*/\1%{backend}/' >setup.cfg <%{SOURCE1}
@@ -365,6 +372,16 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 
 %patch2 -p1
 %patch5 -p1
+for f in $(find . -type f -name '*.py' -print) ; do
+ if grep -q "matplotlib.externals" $f ; then
+  sed -i -e 's/from matplotlib.externals import six/import six/g' -e 's/from matplotlib.externals.six/from six/g' $f
+ fi
+done
+%patch6 -p1 -b .six
+%patch7 -p1 -b .tests
+%ifarch armv7hl
+%patch8 -p1 -b .tests-armv7hl
+%endif
 
 %if 0%{?fedora} > 24
 # Installation paths changed
@@ -414,12 +431,11 @@ rm -rf %{buildroot}%{_datadir}/matplotlib/mpl-data/fonts
 %endif
 
 %if %{with_python3}
-MPLCONFIGDIR=$PWD/.. \
-MATPLOTLIBDATA=$PWD/../lib/matplotlib/mpl-data/ \
+MPLCONFIGDIR=$PWD \
+MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data/ \
     %{__python3} setup.py install -O1 --skip-build --root=%{buildroot}
 chmod +x %{buildroot}%{python3_sitearch}/matplotlib/dates.py
 rm -fr %{buildroot}%{python3_sitearch}/matplotlib/mpl-data
-rm -f %{buildroot}%{python3_sitearch}/six.py
 %endif
 
 %if %{run_tests}
@@ -429,13 +445,13 @@ echo "backend      : %{backend}" > matplotlibrc
 MPLCONFIGDIR=$PWD \
 MATPLOTLIBDATA=%{buildroot}%{_datadir}/matplotlib/mpl-data \
 PYTHONPATH=%{buildroot}%{python2_sitearch} \
-     xvfb-run %{__python} -c "import matplotlib; matplotlib.test()"
+     xvfb-run -a %{__python2} tests.py --no-network --processes=$(getconf _NPROCESSORS_ONLN) --process-timeout=300
 
 %if %{with_python3}
 MPLCONFIGDIR=$PWD \
 MATPLOTLIBDATA=%{buildroot}%{_datadir}/matplotlib/mpl-data \
 PYTHONPATH=%{buildroot}%{python3_sitearch} \
-     xvfb-run %{__python3} -c "import matplotlib; matplotlib.test()"
+     xvfb-run -a %{__python3} tests.py --no-network --processes=$(getconf _NPROCESSORS_ONLN) --process-timeout=300
 %endif
 %endif # run_tests
 
@@ -560,6 +576,12 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Wed May 18 2016 Dominik Mierzejewski <rpm@greysector.net> - 1.5.1-5
+- Unbundle python-six (#1336740).
+- Run tests (and temporarily disable failing ones).
+- Use upstream-recommended way of running tests in parallel.
+- python2-cycler and -mock are required for running tests.
+
 * Sat Apr 30 2016 Ralf Corsépius <corsepiu@fedoraproject.org> - 1.5.1-4
 - Rebuild for qhull-2015.2-1.
 - Reflect qhull_a.h's location having changed.
