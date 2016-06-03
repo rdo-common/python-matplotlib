@@ -46,14 +46,13 @@
 
 Name:           python-matplotlib
 Version:        1.5.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
 License:        Python and MIT
 URL:            http://matplotlib.org
-#Modified Sources to remove the bundled libraries
-Source0:        matplotlib-%{version}-without-extern.tar.xz
+Source0:        https://github.com/matplotlib/matplotlib/archive/v%{version}.tar.gz#/matplotlib-%{version}.tar.gz
 Source1:        setup.cfg
 
 #Patch0:         %{name}-noagg.patch
@@ -352,7 +351,7 @@ Requires:       python3-tkinter
 
 %prep
 %setup -q -n matplotlib-%{version}
-rm -r lib/matplotlib/externals
+rm -r {extern/qhull,lib/matplotlib/externals}
 
 # Copy setup.cfg to the builddir
 sed 's/\(backend = \).*/\1%{backend}/' >setup.cfg <%{SOURCE1}
@@ -576,6 +575,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Mon May 23 2016 Dominik Mierzejewski <rpm@greysector.net> - 1.5.1-6
+- Upstream no longer ships non-free images, use pristine source.
+
 * Wed May 18 2016 Dominik Mierzejewski <rpm@greysector.net> - 1.5.1-5
 - Unbundle python-six (#1336740).
 - Run tests (and temporarily disable failing ones).
