@@ -1,6 +1,5 @@
-%if 0%{?fedora} >= 18
+%if 0%{?fedora}
 %global with_python3            1
-%global basepy3dir              %(echo ../`basename %{py3dir}`)
 %else
 %global with_python3            0
 %endif
@@ -16,7 +15,7 @@
 %endif
 
 # On Fedora 21 onwards, enable Qt5 backend:
-%if 0%{?fedora} >= 21
+%if 0%{?fedora}
 %global with_qt5 1
 %else
 %global with_qt5 0
