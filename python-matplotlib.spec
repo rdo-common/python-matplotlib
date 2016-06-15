@@ -55,10 +55,14 @@ Source0:        https://github.com/matplotlib/matplotlib/archive/v%{version}.tar
 Source1:        setup.cfg
 
 #Patch0:         %{name}-noagg.patch
+# https://github.com/matplotlib/matplotlib/issues/6536
 Patch2:         20_matplotlibrc_path_search_fix.patch
 Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
+# https://github.com/matplotlib/matplotlib/issues/6537
 Patch6:         python-matplotlib-use-system-six.patch
+# https://github.com/matplotlib/matplotlib/issues/6539
 Patch7:         python-matplotlib-disable-failing-tests.patch
+# https://github.com/matplotlib/matplotlib/issues/6538
 Patch8:         python-matplotlib-disable-failing-tests-armv7hl.patch
 
 BuildRequires:  freetype-devel
@@ -411,7 +415,7 @@ MPLCONFIGDIR=$PWD \
 MATPLOTLIBDATA=$PWD/lib/matplotlib/mpl-data \
   xvfb-run %{__python3} setup.py build
 # documentation cannot be built with python3 due to syntax errors
-# and building with python 2 exits with cryptic error messages
+# https://github.com/matplotlib/matplotlib/issues/5805
 %endif
 
 %install
