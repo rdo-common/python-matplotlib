@@ -1,15 +1,6 @@
 diff -up matplotlib-1.5.1/setupext.py.six matplotlib-1.5.1/setupext.py
 --- matplotlib-1.5.1/setupext.py.six	2016-01-10 23:20:20.000000000 +0100
 +++ matplotlib-1.5.1/setupext.py	2016-05-18 13:44:21.534494158 +0200
-@@ -1010,7 +1010,7 @@ class Qhull(SetupPackage):
-             # present on this system, so check if the header files can be
-             # found.
-             include_dirs = [
--                os.path.join(x, 'qhull') for x in get_include_dirs()]
-+                os.path.join(x, 'libqhull') for x in get_include_dirs()]
-             if has_include_file(include_dirs, 'qhull_a.h'):
-                 return 'Using system Qhull (version unknown, no pkg-config info)'
-             else:
 @@ -1026,6 +1026,18 @@ class Qhull(SetupPackage):
              ext.sources.extend(glob.glob('extern/qhull/*.c'))
  
