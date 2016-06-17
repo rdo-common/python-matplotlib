@@ -64,6 +64,7 @@ Patch6:         python-matplotlib-use-system-six.patch
 Patch7:         python-matplotlib-disable-failing-tests.patch
 # https://github.com/matplotlib/matplotlib/issues/6538
 Patch8:         python-matplotlib-disable-failing-tests-armv7hl.patch
+Patch9:         python-matplotlib-qhull.patch
 
 BuildRequires:  freetype-devel
 BuildRequires:  libpng-devel
@@ -387,8 +388,7 @@ done
 
 %if 0%{?fedora} > 24
 # Installation paths changed
-sed -i -e 's,\"qhull/qhull_a.h\",<libqhull/qhull_a.h>,' src/qhull_wrap.c
-sed -i -e "s|os.path.join(x, 'qhull')|os.path.join(x, 'libqhull')|" setupext.py
+%patch9 -p1 -b .qh
 %endif
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg

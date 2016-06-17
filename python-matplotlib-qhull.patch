@@ -1,0 +1,24 @@
+diff -up matplotlib-1.5.2rc2/setupext.py.qh matplotlib-1.5.2rc2/setupext.py
+--- matplotlib-1.5.2rc2/setupext.py.qh	2016-06-04 00:09:22.605827942 +0200
++++ matplotlib-1.5.2rc2/setupext.py	2016-06-04 00:09:22.611827972 +0200
+@@ -1018,7 +1018,7 @@ class Qhull(SetupPackage):
+             # present on this system, so check if the header files can be
+             # found.
+             include_dirs = [
+-                os.path.join(x, 'qhull') for x in get_include_dirs()]
++                os.path.join(x, 'libqhull') for x in get_include_dirs()]
+             if has_include_file(include_dirs, 'qhull_a.h'):
+                 return 'Using system Qhull (version unknown, no pkg-config info)'
+             else:
+diff -up matplotlib-1.5.2rc2/src/qhull_wrap.c.qh matplotlib-1.5.2rc2/src/qhull_wrap.c
+--- matplotlib-1.5.2rc2/src/qhull_wrap.c.qh	2016-05-27 04:19:34.000000000 +0200
++++ matplotlib-1.5.2rc2/src/qhull_wrap.c	2016-06-04 00:09:22.608827957 +0200
+@@ -7,7 +7,7 @@
+  */
+ #include "Python.h"
+ #include "numpy/noprefix.h"
+-#include "qhull/qhull_a.h"
++#include <libqhull/qhull_a.h>
+ #include <stdio.h>
+ 
+ 
