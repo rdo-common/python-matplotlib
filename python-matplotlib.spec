@@ -43,15 +43,17 @@
 # Use the same directory of the main package for subpackage licence and docs
 %global _docdir_fmt %{name}
 
+%global rctag rc2
+
 Name:           python-matplotlib
-Version:        1.5.1
-Release:        6%{?dist}
+Version:        1.5.2
+Release:        0.1%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
 License:        Python and MIT
 URL:            http://matplotlib.org
-Source0:        https://github.com/matplotlib/matplotlib/archive/v%{version}.tar.gz#/matplotlib-%{version}.tar.gz
+Source0:        https://github.com/matplotlib/matplotlib/archive/v%{version}%{?rctag}.tar.gz#/matplotlib-%{version}%{?rctag}.tar.gz
 Source1:        setup.cfg
 
 #Patch0:         %{name}-noagg.patch
@@ -60,6 +62,7 @@ Patch2:         20_matplotlibrc_path_search_fix.patch
 Patch5:         70_bts720549_try_StayPuft_for_xkcd.patch
 # https://github.com/matplotlib/matplotlib/issues/6537
 Patch6:         python-matplotlib-use-system-six.patch
+# https://github.com/matplotlib/matplotlib/pull/6558
 # https://github.com/matplotlib/matplotlib/issues/6539
 Patch7:         python-matplotlib-disable-failing-tests.patch
 # https://github.com/matplotlib/matplotlib/issues/6538
@@ -354,7 +357,7 @@ Requires:       python3-tkinter
 %endif
 
 %prep
-%setup -q -n matplotlib-%{version}
+%setup -q -n matplotlib-%{version}%{?rctag}
 rm -r {extern/qhull,lib/matplotlib/externals}
 
 # Copy setup.cfg to the builddir
@@ -578,6 +581,12 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Fri Jun 03 2016 Dominik Mierzejewski <rpm@greysector.net> - 1.5.1-7
+- Update to 1.5.2rc2.
+- Drop wrong hunk from use-system-six patch.
+- Patch new qhull paths on F25+ instead of using sed.
+- Rebase failing tests patch.
+
 * Mon May 23 2016 Dominik Mierzejewski <rpm@greysector.net> - 1.5.1-6
 - Upstream no longer ships non-free images, use pristine source.
 
