@@ -47,7 +47,7 @@
 
 Name:           python-matplotlib
 Version:        1.5.2
-Release:        0.1%{?rctag:.%{rctag}}%{?dist}
+Release:        0.2%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -581,6 +581,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5.2-0.2.rc2
+- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
+
 * Fri Jun 03 2016 Dominik Mierzejewski <rpm@greysector.net> - 1.5.1-7
 - Update to 1.5.2rc2.
 - Drop wrong hunk from use-system-six patch.
