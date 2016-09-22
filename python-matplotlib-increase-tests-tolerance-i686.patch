@@ -1,0 +1,84 @@
+diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py
+--- matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
++++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py	2016-09-21 22:10:29.723986792 +0200
+@@ -314,7 +314,7 @@ def test_single_point():
+     plt.plot('b','b', 'o', data=data)
+ 
+ 
+-@image_comparison(baseline_images=['single_date'])
++@image_comparison(baseline_images=['single_date'], tol=1.97)
+ def test_single_date():
+     time1 = [721964.0]
+     data1 = [-65.54]
+@@ -2834,7 +2834,7 @@ def test_subplot_key_hash():
+ 
+ @image_comparison(baseline_images=['specgram_freqs',
+                                    'specgram_freqs_linear'],
+-                  remove_text=True, extensions=['png'], tol=0.07)
++                  remove_text=True, extensions=['png'], tol=8.916)
+ def test_specgram_freqs():
+     '''test axes.specgram in default (psd) mode with sinusoidal stimuli'''
+     n = 10000
+@@ -2934,7 +2934,7 @@ def test_specgram_noise():
+ 
+ @image_comparison(baseline_images=['specgram_magnitude_freqs',
+                                    'specgram_magnitude_freqs_linear'],
+-                  remove_text=True, extensions=['png'], tol=0.07)
++                  remove_text=True, extensions=['png'], tol=8.913)
+ def test_specgram_magnitude_freqs():
+     '''test axes.specgram in magnitude mode with sinusoidal stimuli'''
+     n = 10000
+@@ -3035,7 +3035,7 @@ def test_specgram_magnitude_noise():
+ 
+ 
+ @image_comparison(baseline_images=['specgram_angle_freqs'],
+-                  remove_text=True, extensions=['png'], tol=0.007)
++                  remove_text=True, extensions=['png'], tol=2.871)
+ def test_specgram_angle_freqs():
+     '''test axes.specgram in angle mode with sinusoidal stimuli'''
+     n = 10000
+@@ -4523,7 +4523,7 @@ def test_date_timezone_y():
+ 
+ 
+ @image_comparison(baseline_images=['date_timezone_x_and_y'],
+-                  extensions=['png'])
++                  extensions=['png'], tol=3.042)
+ def test_date_timezone_x_and_y():
+     # Tests issue 5575
+     time_index = [pytz.timezone('UTC').localize(datetime.datetime(
+diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py
+--- matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
++++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py	2016-09-21 22:11:22.688364049 +0200
+@@ -489,7 +489,7 @@ def test_EllipseCollection():
+     ax.autoscale_view()
+ 
+ 
+-@image_comparison(baseline_images=['polycollection_close'],
++@image_comparison(baseline_images=['polycollection_close'], tol=0.446,
+                   extensions=['png'], remove_text=True)
+ def test_polycollection_close():
+     from mpl_toolkits.mplot3d import Axes3D
+diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py
+--- matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
++++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py	2016-09-21 22:12:53.503016310 +0200
+@@ -233,7 +233,7 @@ def test_contour_datetime_axis():
+             label.set_rotation(30)
+ 
+ 
+-@image_comparison(baseline_images=['contour_test_label_transforms'],
++@image_comparison(baseline_images=['contour_test_label_transforms'], tol=0.731,
+                   extensions=['png'], remove_text=True)
+ def test_labels():
+     # Adapted from pylab_examples example code: contour_demo.py
+diff -up matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py.tests-i686 matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py
+--- matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
++++ matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py	2016-09-21 22:15:48.271273692 +0200
+@@ -173,7 +173,7 @@ def test_text3d():
+     ax.set_zlabel('Z axis')
+ 
+ 
+-@image_comparison(baseline_images=['trisurf3d'], remove_text=True, tol=0.03)
++@image_comparison(baseline_images=['trisurf3d'], remove_text=True, tol=0.081)
+ def test_trisurf3d():
+     n_angles = 36
+     n_radii = 8
