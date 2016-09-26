@@ -47,7 +47,7 @@
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        0.1%{?rctag:.%{rctag}}%{?dist}
+Release:        0.2%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -120,10 +120,12 @@ Requires:       numpy
 Requires:       pyparsing
 Requires:       python2-cycler >= 0.10.0
 Requires:       python-dateutil
+Requires:       python2-functools32
 Requires:       python-matplotlib-data = %{version}-%{release}
 %{?backend_subpackage:Requires: python2-matplotlib-%{backend_subpackage}%{?_isa} = %{version}-%{release}}
 Recommends:     python2-pillow
 Requires:       python-six
+Requires:       python-subprocess32
 Requires:       pytz
 %if !%{with_bundled_fonts}
 %if 0%{?fedora}
@@ -609,6 +611,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Mon Sep 26 2016 Dominik Mierzejewski <rpm@greysector.net> - 2.0.0-0.2.b4
+- add missing runtime dependencies for python2 package
+
 * Sat Sep 10 2016 Dominik Mierzejewski <rpm@greysector.net> - 2.0.0-0.1.b4
 - Update to 2.0.0b4
 - Drop upstreamed or obsolete patches
