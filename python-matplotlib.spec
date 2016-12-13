@@ -52,7 +52,7 @@
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        0.3%{?rctag:.%{rctag}}%{?dist}
+Release:        0.4%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -616,6 +616,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Dec 13 2016 Charalampos Stratakis <cstratak@redhat.com> - 2.0.0-0.4.b4
+- Rebuild for Python 3.6
+
 * Mon Oct 24 2016 Dan Horák <dan[at]danny.cz> - 2.0.0-0.3.b4
 - disable tests on some alt-arches to unblock depending builds
 
