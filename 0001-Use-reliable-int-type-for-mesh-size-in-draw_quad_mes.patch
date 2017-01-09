@@ -1,0 +1,69 @@
+From ae2ee043c7b510d43b4b0f90a09e63904382edd9 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Tue, 10 Jan 2017 13:57:16 -0800
+Subject: [PATCH] Use reliable int type for mesh size in draw_quad_mesh (#7788)
+
+In the agg backend, `PyRendererAgg.draw_quad_mesh` takes mesh
+dimension arguments (`mesh_width` and `mesh_height`). When
+converting those from Python to C, we were declaring the C
+types as `size_t`, but converting from Python using the 'I'
+format specifier, which converts a Python integer to a C
+unsigned int. This isn't safe, because `size_t` is not
+necessarily the same size as an int. On Fedora with GCC, for
+instance, `size_t` is an alias for long unsigned int.
+
+On LE arches this usually won't cause a problem, but on a BE
+arch where `size_t` isn't an int type, the mismatch causes
+rendering errors (see #7788).
+
+This addresses the problem by just changing the types for these
+values to be `unsigned int` instead.
+---
+ src/_backend_agg.h           | 8 ++++----
+ src/_backend_agg_wrapper.cpp | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/_backend_agg.h b/src/_backend_agg.h
+index 0265647cb..53b73f179 100644
+--- a/src/_backend_agg.h
++++ b/src/_backend_agg.h
+@@ -182,8 +182,8 @@ class RendererAgg
+     template <class CoordinateArray, class OffsetArray, class ColorArray>
+     void draw_quad_mesh(GCAgg &gc,
+                         agg::trans_affine &master_transform,
+-                        size_t mesh_width,
+-                        size_t mesh_height,
++                        unsigned int mesh_width,
++                        unsigned int mesh_height,
+                         CoordinateArray &coordinates,
+                         OffsetArray &offsets,
+                         agg::trans_affine &offset_trans,
+@@ -1148,8 +1148,8 @@ class QuadMeshGenerator
+ template <class CoordinateArray, class OffsetArray, class ColorArray>
+ inline void RendererAgg::draw_quad_mesh(GCAgg &gc,
+                                         agg::trans_affine &master_transform,
+-                                        size_t mesh_width,
+-                                        size_t mesh_height,
++                                        unsigned int mesh_width,
++                                        unsigned int mesh_height,
+                                         CoordinateArray &coordinates,
+                                         OffsetArray &offsets,
+                                         agg::trans_affine &offset_trans,
+diff --git a/src/_backend_agg_wrapper.cpp b/src/_backend_agg_wrapper.cpp
+index f6ed42bcd..4806feda0 100644
+--- a/src/_backend_agg_wrapper.cpp
++++ b/src/_backend_agg_wrapper.cpp
+@@ -390,8 +390,8 @@ static PyObject *PyRendererAgg_draw_quad_mesh(PyRendererAgg *self, PyObject *arg
+ {
+     GCAgg gc;
+     agg::trans_affine master_transform;
+-    size_t mesh_width;
+-    size_t mesh_height;
++    unsigned int mesh_width;
++    unsigned int mesh_height;
+     numpy::array_view<const double, 3> coordinates;
+     numpy::array_view<const double, 2> offsets;
+     agg::trans_affine offset_trans;
+-- 
+2.11.0
+

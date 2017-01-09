@@ -1,31 +1,28 @@
-diff -up matplotlib-2.0.0b4/lib/matplotlib/testing/decorators.py.tests matplotlib-2.0.0b4/lib/matplotlib/testing/decorators.py
---- matplotlib-2.0.0b4/lib/matplotlib/testing/decorators.py.tests	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/testing/decorators.py	2016-09-21 14:32:15.873155667 +0200
-@@ -268,7 +268,7 @@ class ImageComparisonTest(CleanupTest):
+--- matplotlib-2.0.0rc2/lib/matplotlib/testing/decorators.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/testing/decorators.py.new	2017-01-07 21:19:51.078081193 -0800
+@@ -266,7 +266,7 @@
  
-                 yield (do_test,)
+                 yield do_test, fignum, actual_fname, expected_fname
  
 -def image_comparison(baseline_images=None, extensions=None, tol=0,
 +def image_comparison(baseline_images=None, extensions=None, tol=0.306,
                       freetype_version=None, remove_text=False,
                       savefig_kwarg=None, style='classic'):
      """
-diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_png.py.tests matplotlib-2.0.0b4/lib/matplotlib/tests/test_png.py
---- matplotlib-2.0.0b4/lib/matplotlib/tests/test_png.py.tests	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_png.py	2016-09-21 14:56:44.756256983 +0200
-@@ -17,7 +17,7 @@ on_win = (sys.platform == 'win32')
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_png.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_png.py.new	2017-01-07 21:20:22.388215456 -0800
+@@ -17,7 +17,7 @@
  
  
  @image_comparison(baseline_images=['pngsuite'], extensions=['png'],
 -                  tol=0.01 if on_win else 0)
-+                  tol=0.012)
++                  tol=0.014)
  def test_pngsuite():
      dirname = os.path.join(
          os.path.dirname(__file__),
-diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_streamplot.py.tests matplotlib-2.0.0b4/lib/matplotlib/tests/test_streamplot.py
---- matplotlib-2.0.0b4/lib/matplotlib/tests/test_streamplot.py.tests	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_streamplot.py	2016-09-21 14:57:16.279481106 +0200
-@@ -18,7 +18,7 @@ def velocity_field():
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_streamplot.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_streamplot.py.new	2017-01-07 21:20:42.180300328 -0800
+@@ -18,7 +18,7 @@
  
  
  @image_comparison(baseline_images=['streamplot_colormap'],
@@ -34,10 +31,9 @@ diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_streamplot.py.tests matplo
  def test_colormap():
      X, Y, U, V = velocity_field()
      plt.streamplot(X, Y, U, V, color=U, density=0.6, linewidth=2,
-diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_patheffects.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_patheffects.py
---- matplotlib-2.0.0b4/lib/matplotlib/tests/test_patheffects.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_patheffects.py	2016-09-21 22:14:17.959623938 +0200
-@@ -110,7 +110,7 @@ def test_SimplePatchShadow_offset():
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_patheffects.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_patheffects.py.new	2017-01-07 21:21:08.014411109 -0800
+@@ -110,7 +110,7 @@
      assert_equal(pe._offset, (4, 5))
  
  
@@ -46,15 +42,14 @@ diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_patheffects.py.tests-i686 
  def test_collection():
      x, y = np.meshgrid(np.linspace(0, 10, 150), np.linspace(-5, 5, 100))
      data = np.sin(x) + np.cos(y)
-diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_transforms.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_transforms.py
---- matplotlib-2.0.0b4/lib/matplotlib/tests/test_transforms.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_transforms.py	2016-09-21 22:14:58.848918119 +0200
-@@ -82,7 +82,7 @@ def test_external_transform_api():
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_mathtext.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_mathtext.py.new	2017-01-07 22:02:42.396426402 -0800
+@@ -158,7 +158,7 @@
  
- 
- @image_comparison(baseline_images=['pre_transform_data'],
--                  tol=0.08)
-+                  tol=0.818)
- def test_pre_transform_plotting():
-     # a catch-all for as many as possible plot layouts which handle
-     # pre-transforming the data NOTE: The axis range is important in this
+ def make_set(basename, fontset, tests, extensions=None):
+     def make_test(filename, test):
+-        @image_comparison(baseline_images=[filename], extensions=extensions)
++        @image_comparison(baseline_images=[filename], extensions=extensions, tol=0.310)
+         def single_test():
+             matplotlib.rcParams['mathtext.fontset'] = fontset
+             fig = plt.figure(figsize=(5.25, 0.75))

@@ -1,0 +1,35 @@
+From 47a4bf83a4354740359f4c535a3ccd0f9238bb66 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Tue, 10 Jan 2017 16:12:51 -0800
+Subject: [PATCH] Only byte-swap 16-bit PNGs on little-endian (#7792)
+
+_png has some code that unconditionally byte-swaps 16-bit PNG
+data (which is, per the spec, stored in big-endian order). This
+isn't appropriate on a big-endian platform, though: this swap
+being done unconditionally breaks the handling of 16-bit PNGs
+on big-endian platforms (e.g. Fedora ppc64), as reported in
+this swap or not.
+---
+ src/_png.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/_png.cpp b/src/_png.cpp
+index f5c25deeb..06e4b8754 100644
+--- a/src/_png.cpp
++++ b/src/_png.cpp
+@@ -532,10 +532,12 @@ static PyObject *_read_png(PyObject *filein, bool float_result)
+         png_set_shift(png_ptr, sig_bit);
+     }
+ 
++#if NPY_BYTE_ORDER == NPY_LITTLE_ENDIAN
+     // Convert big endian to little
+     if (bit_depth == 16) {
+         png_set_swap(png_ptr);
+     }
++#endif
+ 
+     // Convert palletes to full RGB
+     if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_PALETTE) {
+-- 
+2.11.0
+

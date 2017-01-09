@@ -1,7 +1,6 @@
-diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py
---- matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py	2016-09-21 22:10:29.723986792 +0200
-@@ -314,7 +314,7 @@ def test_single_point():
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_axes.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_axes.py.new	2017-01-07 21:35:06.874039829 -0800
+@@ -361,7 +361,7 @@
      plt.plot('b','b', 'o', data=data)
  
  
@@ -10,34 +9,7 @@ diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py.tests-i686 matplot
  def test_single_date():
      time1 = [721964.0]
      data1 = [-65.54]
-@@ -2834,7 +2834,7 @@ def test_subplot_key_hash():
- 
- @image_comparison(baseline_images=['specgram_freqs',
-                                    'specgram_freqs_linear'],
--                  remove_text=True, extensions=['png'], tol=0.07)
-+                  remove_text=True, extensions=['png'], tol=8.916)
- def test_specgram_freqs():
-     '''test axes.specgram in default (psd) mode with sinusoidal stimuli'''
-     n = 10000
-@@ -2934,7 +2934,7 @@ def test_specgram_noise():
- 
- @image_comparison(baseline_images=['specgram_magnitude_freqs',
-                                    'specgram_magnitude_freqs_linear'],
--                  remove_text=True, extensions=['png'], tol=0.07)
-+                  remove_text=True, extensions=['png'], tol=8.913)
- def test_specgram_magnitude_freqs():
-     '''test axes.specgram in magnitude mode with sinusoidal stimuli'''
-     n = 10000
-@@ -3035,7 +3035,7 @@ def test_specgram_magnitude_noise():
- 
- 
- @image_comparison(baseline_images=['specgram_angle_freqs'],
--                  remove_text=True, extensions=['png'], tol=0.007)
-+                  remove_text=True, extensions=['png'], tol=2.871)
- def test_specgram_angle_freqs():
-     '''test axes.specgram in angle mode with sinusoidal stimuli'''
-     n = 10000
-@@ -4523,7 +4523,7 @@ def test_date_timezone_y():
+@@ -4696,7 +4696,7 @@
  
  
  @image_comparison(baseline_images=['date_timezone_x_and_y'],
@@ -46,10 +18,9 @@ diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_axes.py.tests-i686 matplot
  def test_date_timezone_x_and_y():
      # Tests issue 5575
      time_index = [pytz.timezone('UTC').localize(datetime.datetime(
-diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py
---- matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py	2016-09-21 22:11:22.688364049 +0200
-@@ -489,7 +489,7 @@ def test_EllipseCollection():
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_collections.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_collections.py.new	2017-01-07 21:35:52.016235301 -0800
+@@ -489,7 +489,7 @@
      ax.autoscale_view()
  
  
@@ -58,10 +29,9 @@ diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_collections.py.tests-i686 
                    extensions=['png'], remove_text=True)
  def test_polycollection_close():
      from mpl_toolkits.mplot3d import Axes3D
-diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py.tests-i686 matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py
---- matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py	2016-09-21 22:12:53.503016310 +0200
-@@ -233,7 +233,7 @@ def test_contour_datetime_axis():
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_contour.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_contour.py.new	2017-01-07 21:36:29.283396673 -0800
+@@ -233,7 +233,7 @@
              label.set_rotation(30)
  
  
@@ -70,10 +40,9 @@ diff -up matplotlib-2.0.0b4/lib/matplotlib/tests/test_contour.py.tests-i686 matp
                    extensions=['png'], remove_text=True)
  def test_labels():
      # Adapted from pylab_examples example code: contour_demo.py
-diff -up matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py.tests-i686 matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py
---- matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py.tests-i686	2016-09-09 05:53:26.000000000 +0200
-+++ matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py	2016-09-21 22:15:48.271273692 +0200
-@@ -173,7 +173,7 @@ def test_text3d():
+--- matplotlib-2.0.0rc2/lib/mpl_toolkits/tests/test_mplot3d.py	2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/mpl_toolkits/tests/test_mplot3d.py.new	2017-01-07 21:37:04.144547626 -0800
+@@ -171,7 +171,7 @@
      ax.set_zlabel('Z axis')
  
  
@@ -82,3 +51,15 @@ diff -up matplotlib-2.0.0b4/lib/mpl_toolkits/tests/test_mplot3d.py.tests-i686 ma
  def test_trisurf3d():
      n_angles = 36
      n_radii = 8
+--- matplotlib-2.0.0rc2/lib/matplotlib/tests/test_transforms.py 2016-12-18 11:40:53.000000000 -0800
++++ matplotlib-2.0.0rc2/lib/matplotlib/tests/test_transforms.py.new     2017-01-07 21:21:29.478503151 -0800
+@@ -82,7 +82,7 @@
+ 
+ 
+ @image_comparison(baseline_images=['pre_transform_data'],
+-                  tol=0.08)
++                  tol=0.15)
+ def test_pre_transform_plotting():
+     # a catch-all for as many as possible plot layouts which handle
+     # pre-transforming the data NOTE: The axis range is important in this
+

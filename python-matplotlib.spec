@@ -5,12 +5,15 @@
 %endif
 %global __provides_exclude_from .*/site-packages/.*\\.so$
 %global with_html               0
-%ifarch %{power64} s390x
-# disable tests on alt arches until resolved by upstream
-%global run_tests               0
-%else
+
+# It seems like there's some kind of weird occasional error where a
+# build (often aarch64 or ppc64) will fail in one of the Stix font
+# tests with a huge RMS difference, but if you run the same build again,
+# you won't get the same error. Unless someone can figure out what's
+# going on, we just have to keep re-running the build until it doesn't
+# happen.
 %global run_tests               1
-%endif
+
 
 # On RHEL 7 onwards, don't build with wx:
 %if 0%{?rhel} >= 7
@@ -48,11 +51,11 @@
 # Use the same directory of the main package for subpackage licence and docs
 %global _docdir_fmt %{name}
 
-%global rctag b4
+%global rctag rc2
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        0.6%{?rctag:.%{rctag}}%{?dist}
+Release:        0.7%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -69,15 +72,20 @@ Patch9:         python-matplotlib-qhull.patch
 # https://github.com/matplotlib/matplotlib/issues/7134
 # https://github.com/matplotlib/matplotlib/issues/7158
 # https://github.com/matplotlib/matplotlib/issues/7159
+# https://github.com/matplotlib/matplotlib/issues/7797
 Patch10:        python-matplotlib-increase-tests-tolerance.patch
-Patch11:        python-matplotlib-increase-tests-tolerance-aarch64.patch
+Patch11:        python-matplotlib-increase-tests-tolerance-aarch64ppc64.patch
 Patch13:        python-matplotlib-increase-tests-tolerance-i686.patch
-# These two patches fix some integer type issues which broke matplotlib
+# These four patches all fix integer type issues which broke matplotlib
 # badly on ppc64 (big-endian)
 # https://github.com/matplotlib/matplotlib/pull/7768
 Patch14:        https://github.com/matplotlib/matplotlib/commit/b0e4b6708d71df80999764eb4b65cc1d388a521f.patch
 # https://github.com/matplotlib/matplotlib/pull/7781
 Patch15:        0001-Fix-integer-types-for-font-metrics-in-PyGlyph-class.patch
+# https://github.com/matplotlib/matplotlib/pull/7791
+Patch16:        0001-Use-reliable-int-type-for-mesh-size-in-draw_quad_mes.patch
+# https://github.com/matplotlib/matplotlib/pull/7796
+Patch17:        0001-Only-byte-swap-16-bit-PNGs-on-little-endian-7792.patch
 
 BuildRequires:  freetype-devel
 BuildRequires:  libpng-devel
@@ -418,14 +426,16 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %patch9 -p1 -b .qh
 %endif
 %patch10 -p1 -b .tests
-%ifarch aarch64
-%patch11 -p1 -b .tests-aarch64
+%ifarch aarch64 %{power64}
+%patch11 -p1 -b .tests-aarch64ppc64
 %endif
 %ifarch i686
 %patch13 -p1 -b .tests-i686
 %endif
 %patch14 -p1 -b .inttype
 %patch15 -p1 -b .moreints
+%patch16 -p1 -b .yetmoreints
+%patch17 -p1 -b .pngswap
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 chmod -x lib/matplotlib/{dates,sankey}.py
@@ -624,6 +634,14 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Tue Jan 10 2017 Adam Williamson <awilliam@redhat.com> - 2.0.0-0.7.rc2
+- Update to 2.0.0rc2
+- Fix more big-endian integer issues
+- Apply the 'aarch64' test tolerance patch on ppc64 also (it's affected by same issues)
+- Tweak the 'i686' test tolerance patch a bit (some errors are gone, some new ones)
+- Re-enable test suite for all arches
+- Note a remaining quasi-random test issue that causes build to fail sometimes
+
 * Mon Jan 09 2017 Adam Williamson <awilliam@redhat.com> - 2.0.0-0.6.b4
 - Fix another integer type issue which caused more issues on ppc64
 
