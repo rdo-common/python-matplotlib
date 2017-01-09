@@ -1,0 +1,37 @@
+From c4c0b657ca7b55b99d87b045852227523a293848 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Sun, 8 Jan 2017 17:12:59 -0800
+Subject: [PATCH] Convert unicode index to long, not int, in get_char_index
+
+There's an error in the `PyFT2Font.get_char_index()` method
+added in 2d56ffeb . The type for the unicode index to be sent
+to `FT_Get_Char_Index` is `FT_ULong` - an unsigned long - but
+the `PyArg_ParseTuple` call that converts it from Python used
+`I` in the format string, which converts a Python int to a C
+unsigned int, not a C unsigned long. This doesn't seem to cause
+a problem on little-endian arches, but it results in completely
+incorrect conversion on big-endian arches, which in turn would
+result in wrong glyphs, unfound glyphs, and even in an infinite
+recursion in `UnicodeFonts._get_glyph`.
+
+To get correct conversion we must use `k` not `I`, which is
+the specifier for a C unsigned long.
+
+Ref: https://docs.python.org/3/c-api/arg.html#numbers
+---
+ src/ft2font_wrapper.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/ft2font_wrapper.cpp b/src/ft2font_wrapper.cpp
+index a97de68..c77dd83 100644
+--- a/src/ft2font_wrapper.cpp
++++ b/src/ft2font_wrapper.cpp
+@@ -971,7 +971,7 @@ static PyObject *PyFT2Font_get_char_index(PyFT2Font *self, PyObject *args, PyObj
+     FT_UInt index;
+     FT_ULong ccode;
+ 
+-    if (!PyArg_ParseTuple(args, "I:get_char_index", &ccode)) {
++    if (!PyArg_ParseTuple(args, "k:get_char_index", &ccode)) {
+         return NULL;
+     }
+ 

@@ -52,7 +52,7 @@
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        0.4%{?rctag:.%{rctag}}%{?dist}
+Release:        0.5%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -72,6 +72,7 @@ Patch9:         python-matplotlib-qhull.patch
 Patch10:        python-matplotlib-increase-tests-tolerance.patch
 Patch11:        python-matplotlib-increase-tests-tolerance-aarch64.patch
 Patch13:        python-matplotlib-increase-tests-tolerance-i686.patch
+Patch14:        https://github.com/matplotlib/matplotlib/pull/7768.patch
 
 BuildRequires:  freetype-devel
 BuildRequires:  libpng-devel
@@ -418,6 +419,7 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %ifarch i686
 %patch13 -p1 -b .tests-i686
 %endif
+%patch14 -p1 -b .inttype
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 chmod -x lib/matplotlib/{dates,sankey}.py
@@ -616,6 +618,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Sun Jan 08 2017 Adam Williamson <awilliam@redhat.com> - 2.0.0-0.5.b4
+- Fix int type conversion error that broke text rendering on ppc64 (#1411070)
+
 * Tue Dec 13 2016 Charalampos Stratakis <cstratak@redhat.com> - 2.0.0-0.4.b4
 - Rebuild for Python 3.6
 
