@@ -52,7 +52,7 @@
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        0.5%{?rctag:.%{rctag}}%{?dist}
+Release:        0.6%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -72,7 +72,12 @@ Patch9:         python-matplotlib-qhull.patch
 Patch10:        python-matplotlib-increase-tests-tolerance.patch
 Patch11:        python-matplotlib-increase-tests-tolerance-aarch64.patch
 Patch13:        python-matplotlib-increase-tests-tolerance-i686.patch
-Patch14:        https://github.com/matplotlib/matplotlib/pull/7768.patch
+# These two patches fix some integer type issues which broke matplotlib
+# badly on ppc64 (big-endian)
+# https://github.com/matplotlib/matplotlib/pull/7768
+Patch14:        https://github.com/matplotlib/matplotlib/commit/b0e4b6708d71df80999764eb4b65cc1d388a521f.patch
+# https://github.com/matplotlib/matplotlib/pull/7781
+Patch15:        0001-Fix-integer-types-for-font-metrics-in-PyGlyph-class.patch
 
 BuildRequires:  freetype-devel
 BuildRequires:  libpng-devel
@@ -420,6 +425,7 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %patch13 -p1 -b .tests-i686
 %endif
 %patch14 -p1 -b .inttype
+%patch15 -p1 -b .moreints
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 chmod -x lib/matplotlib/{dates,sankey}.py
@@ -618,6 +624,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Mon Jan 09 2017 Adam Williamson <awilliam@redhat.com> - 2.0.0-0.6.b4
+- Fix another integer type issue which caused more issues on ppc64
+
 * Sun Jan 08 2017 Adam Williamson <awilliam@redhat.com> - 2.0.0-0.5.b4
 - Fix int type conversion error that broke text rendering on ppc64 (#1411070)
 

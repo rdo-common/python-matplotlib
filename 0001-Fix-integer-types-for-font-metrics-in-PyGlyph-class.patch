@@ -1,0 +1,48 @@
+From bf970bd8bc13b4e6e281a47163527909270edcbf Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Mon, 9 Jan 2017 22:56:40 -0800
+Subject: [PATCH] Fix integer types for font metrics in PyGlyph class
+
+The PyGlyph class defined in the freetype wrapper code pulls
+in some font metric values from freetype when initialized. All
+these values have type FT_Pos in freetype, which is a signed
+long, but in the PyMemberDef structure used to store those
+values in the Python class, their types were set to T_INT -
+signed int. We should set them to T_LONG instead. This fixes
+several hundred test suite errors on big-endian arches.
+---
+ src/ft2font_wrapper.cpp | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/src/ft2font_wrapper.cpp b/src/ft2font_wrapper.cpp
+index c77dd8363..62fbf0a0c 100644
+--- a/src/ft2font_wrapper.cpp
++++ b/src/ft2font_wrapper.cpp
+@@ -282,15 +282,15 @@ static PyObject *PyGlyph_get_bbox(PyGlyph *self, void *closure)
+ static PyTypeObject *PyGlyph_init_type(PyObject *m, PyTypeObject *type)
+ {
+     static PyMemberDef members[] = {
+-        {(char *)"width", T_INT, offsetof(PyGlyph, width), READONLY, (char *)""},
+-        {(char *)"height", T_INT, offsetof(PyGlyph, height), READONLY, (char *)""},
+-        {(char *)"horiBearingX", T_INT, offsetof(PyGlyph, horiBearingX), READONLY, (char *)""},
+-        {(char *)"horiBearingY", T_INT, offsetof(PyGlyph, horiBearingY), READONLY, (char *)""},
+-        {(char *)"horiAdvance", T_INT, offsetof(PyGlyph, horiAdvance), READONLY, (char *)""},
+-        {(char *)"linearHoriAdvance", T_INT, offsetof(PyGlyph, linearHoriAdvance), READONLY, (char *)""},
+-        {(char *)"vertBearingX", T_INT, offsetof(PyGlyph, vertBearingX), READONLY, (char *)""},
+-        {(char *)"vertBearingY", T_INT, offsetof(PyGlyph, vertBearingY), READONLY, (char *)""},
+-        {(char *)"vertAdvance", T_INT, offsetof(PyGlyph, vertAdvance), READONLY, (char *)""},
++        {(char *)"width", T_LONG, offsetof(PyGlyph, width), READONLY, (char *)""},
++        {(char *)"height", T_LONG, offsetof(PyGlyph, height), READONLY, (char *)""},
++        {(char *)"horiBearingX", T_LONG, offsetof(PyGlyph, horiBearingX), READONLY, (char *)""},
++        {(char *)"horiBearingY", T_LONG, offsetof(PyGlyph, horiBearingY), READONLY, (char *)""},
++        {(char *)"horiAdvance", T_LONG, offsetof(PyGlyph, horiAdvance), READONLY, (char *)""},
++        {(char *)"linearHoriAdvance", T_LONG, offsetof(PyGlyph, linearHoriAdvance), READONLY, (char *)""},
++        {(char *)"vertBearingX", T_LONG, offsetof(PyGlyph, vertBearingX), READONLY, (char *)""},
++        {(char *)"vertBearingY", T_LONG, offsetof(PyGlyph, vertBearingY), READONLY, (char *)""},
++        {(char *)"vertAdvance", T_LONG, offsetof(PyGlyph, vertAdvance), READONLY, (char *)""},
+         {NULL}
+     };
+ 
+-- 
+2.11.0
+
