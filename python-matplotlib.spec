@@ -51,11 +51,11 @@
 # Use the same directory of the main package for subpackage licence and docs
 %global _docdir_fmt %{name}
 
-%global rctag rc2
+#global rctag rc2
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        0.7%{?rctag:.%{rctag}}%{?dist}
+Release:        1%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -76,16 +76,6 @@ Patch9:         python-matplotlib-qhull.patch
 Patch10:        python-matplotlib-increase-tests-tolerance.patch
 Patch11:        python-matplotlib-increase-tests-tolerance-aarch64ppc64.patch
 Patch13:        python-matplotlib-increase-tests-tolerance-i686.patch
-# These four patches all fix integer type issues which broke matplotlib
-# badly on ppc64 (big-endian)
-# https://github.com/matplotlib/matplotlib/pull/7768
-Patch14:        https://github.com/matplotlib/matplotlib/commit/b0e4b6708d71df80999764eb4b65cc1d388a521f.patch
-# https://github.com/matplotlib/matplotlib/pull/7781
-Patch15:        0001-Fix-integer-types-for-font-metrics-in-PyGlyph-class.patch
-# https://github.com/matplotlib/matplotlib/pull/7791
-Patch16:        0001-Use-reliable-int-type-for-mesh-size-in-draw_quad_mes.patch
-# https://github.com/matplotlib/matplotlib/pull/7796
-Patch17:        0001-Only-byte-swap-16-bit-PNGs-on-little-endian-7792.patch
 
 BuildRequires:  freetype-devel
 BuildRequires:  libpng-devel
@@ -432,10 +422,6 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %ifarch i686
 %patch13 -p1 -b .tests-i686
 %endif
-%patch14 -p1 -b .inttype
-%patch15 -p1 -b .moreints
-%patch16 -p1 -b .yetmoreints
-%patch17 -p1 -b .pngswap
 
 chmod -x lib/matplotlib/mpl-data/images/*.svg
 chmod -x lib/matplotlib/{dates,sankey}.py
@@ -634,6 +620,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Fri Jan 20 2017 Orion Poplawski <orion@cora.nwra.com> - 2.0.0-1
+- Update to 2.0.0 final
+
 * Tue Jan 10 2017 Adam Williamson <awilliam@redhat.com> - 2.0.0-0.7.rc2
 - Update to 2.0.0rc2
 - Fix more big-endian integer issues
