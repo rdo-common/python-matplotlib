@@ -132,7 +132,7 @@ Requires:       python-dateutil
 Requires:       python2-functools32
 Requires:       python-matplotlib-data = %{version}-%{release}
 %{?backend_subpackage:Requires: python2-matplotlib-%{backend_subpackage}%{?_isa} = %{version}-%{release}}
-Recommends:     python2-pillow
+#Recommends:     python2-pillow
 Requires:       python-six
 Requires:       python-subprocess32
 Requires:       pytz
@@ -308,7 +308,7 @@ BuildRequires:  python3-mock
 BuildRequires:  python3-nose
 %endif
 Requires:       python3-numpy
-Recommends:     python3-pillow
+#Recommends:     python3-pillow
 Requires:       python3-pyparsing
 Requires:       python3-pytz
 Requires:       python3-six
@@ -411,7 +411,7 @@ sed -i 's/\(USE_FONTCONFIG = \)False/\1True/' lib/matplotlib/font_manager.py
 %patch8 -p1 -b .tests-arm
 %endif
 
-%if 0%{?fedora} > 24
+%if 0%{?fedora} > 24 || 0%{?rhel} >= 7
 # Installation paths changed
 %patch9 -p1 -b .qh
 %endif
