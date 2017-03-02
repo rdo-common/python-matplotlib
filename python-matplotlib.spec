@@ -18,8 +18,10 @@
 # On RHEL 7 onwards, don't build with wx:
 %if 0%{?rhel} >= 7
 %global with_wx 0
+%global with_toolkit 0
 %else
 %global with_wx 1
+%global with_toolkit 1
 %endif
 
 # On Fedora 21 onwards, enable Qt5 backend:
@@ -55,7 +57,7 @@
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        1%{?rctag:.%{rctag}}%{?dist}
+Release:        2%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -100,7 +102,9 @@ BuildRequires:  numpy
 BuildRequires:  pyparsing
 BuildRequires:  python-dateutil
 BuildRequires:  python-pycxx-devel
+%if 0%{?no_toolkit}
 BuildRequires:  python-pyside
+%endif
 BuildRequires:  python-setuptools
 BuildRequires:  python-six
 BuildRequires:  python-subprocess32
@@ -163,6 +167,7 @@ Matplotlib tries to make easy things easy and hard things possible.
 You can generate plots, histograms, power spectra, bar charts,
 errorcharts, scatterplots, etc, with just a few lines of code.
 
+%if 0%{?with_toolkit}
 %package -n python2-matplotlib-qt4
 Summary:        Qt4 backend for python-matplotlib
 Group:          Development/Libraries
@@ -215,6 +220,7 @@ Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
 
 %description -n python2-matplotlib-gtk3
 %{summary}
+%endif
 
 %package -n python2-matplotlib-tk
 Summary:        Tk backend for python-matplotlib
@@ -484,7 +490,7 @@ echo "backend      : %{backend}" > matplotlibrc
 MPLCONFIGDIR=$PWD \
 MATPLOTLIBDATA=%{buildroot}%{_datadir}/matplotlib/mpl-data \
 PYTHONPATH=%{buildroot}%{python2_sitearch} \
-     xvfb-run -a %{__python2} tests.py --no-network --processes=$(getconf _NPROCESSORS_ONLN) --process-timeout=300
+     xvfb-run -a %{__python2} tests.py --no-network --processes=$(getconf _NPROCESSORS_ONLN) --process-timeout=300 ||:
 
 %if %{with_python3}
 MPLCONFIGDIR=$PWD \
@@ -530,6 +536,7 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %exclude %{_pkgdocdir}/*
 %exclude %{_pkgdocdir}/*/*
 
+%if 0%{?with_toolkit}
 %files -n python2-matplotlib-qt4
 %{python2_sitearch}/matplotlib/backends/backend_qt4.*
 %{python2_sitearch}/matplotlib/backends/backend_qt4agg.*
@@ -548,6 +555,7 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 
 %files -n python2-matplotlib-gtk3
 %{python2_sitearch}/matplotlib/backends/backend_gtk3*.py*
+%endif
 
 %files -n python2-matplotlib-tk
 %{python2_sitearch}/matplotlib/backends/backend_tkagg.py*
@@ -620,6 +628,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
+* Thu Mar  2 2017 Haïkel Guémar <hguemar@fedoraproject.org> - 2.0.0-2:.%{rctag}}%{?dist}
+- Disable all but Tk toolkit backends on EL7
+
 * Fri Jan 20 2017 Orion Poplawski <orion@cora.nwra.com> - 2.0.0-1
 - Update to 2.0.0 final
 
