@@ -57,7 +57,7 @@
 
 Name:           python-matplotlib
 Version:        2.0.0
-Release:        2%{?rctag:.%{rctag}}%{?dist}
+Release:        3%{?rctag:.%{rctag}}%{?dist}
 Summary:        Python 2D plotting library
 Group:          Development/Libraries
 # qt4_editor backend is MIT
@@ -174,7 +174,7 @@ Group:          Development/Libraries
 BuildRequires:  PyQt4-devel
 Requires:       PyQt4
 Requires:       python2-matplotlib%{?_isa} = %{version}-%{release}
-Requires:       python2-matplotlib-qt5
+#Requires:       python2-matplotlib-qt5
 %{?python_provide:%python_provide python2-matplotlib-qt4}
 
 %description -n python2-matplotlib-qt4
@@ -628,7 +628,10 @@ PYTHONPATH=%{buildroot}%{python3_sitearch} \
 %endif
 
 %changelog
-* Thu Mar  2 2017 Haïkel Guémar <hguemar@fedoraproject.org> - 2.0.0-2:.%{rctag}}%{?dist}
+* Thu Aug 31 2017 Haïkel Guémar <hguemar@fedoraproject.org> - 2.0.0-3
+- Drop qt4 subpackage dependency on qt5 one
+
+* Thu Mar  2 2017 Haïkel Guémar <hguemar@fedoraproject.org> - 2.0.0-2
 - Disable all but Tk toolkit backends on EL7
 
 * Fri Jan 20 2017 Orion Poplawski <orion@cora.nwra.com> - 2.0.0-1
